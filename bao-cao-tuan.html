@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chỉ số báo cáo tuần Quảng Trị - Tuần 45</title>
+<title>Chỉ số báo cáo tuần Quảng Trị - Tuần 45</title><meta name="author" content="ĐTH-VPTU"><meta name="copyright" content="© 2026 ĐTH-VPTU">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Serif:wght@400;600&display=swap">
 <style>
 :root { --color-fg:#1d2430; --color-fg-muted:#5f6b7c; --color-bg:#f6f7f9; --color-panel:#ffffff; --color-border-line:#dfe3ea; --color-ok:#1f7a4d; --color-warn:#a35f00; --color-bad:#b3262f;
@@ -232,6 +232,9 @@ body { margin: 0; background: #F5F3F1; }
   .qx .chip.neutral{background:var(--neutral-bg);color:var(--ink)}
   .qx .chip.neutral::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--s)}
   .qx .tabs .wrap{scrollbar-width:thin}
+  .qx .ban-quyen{border-top:3px solid var(--gold);background:var(--brand);color:var(--on-brand);font-size:12.5px}
+  .qx .ban-quyen .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;padding-block:12px}
+  .qx .ky-hieu{display:block;margin-top:4px;font-family:var(--f-ui);font-size:10.5px;font-weight:600;letter-spacing:.12em;opacity:.85}
   .qx .nvg-dong{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
   .qx .nvg-dong:first-child{border-top:0} .qx .nvg-dong:hover{background:var(--surface-2)} .qx .nvg-dong small{display:block;color:var(--ink-2);font-size:12px}
   .qx .nk-dong{display:grid;grid-template-columns:9.5rem minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line)} .qx .nk-dong:first-child{border-top:0}
@@ -264,7 +267,7 @@ body { margin: 0; background: #F5F3F1; }
 <div class="qx" id="tong-quan">
   <div class="mast">
     <div class="wrap">
-      <div class="thethuc">TỈNH ỦY QUẢNG TRỊ<br>VĂN PHÒNG<span class="sao">*</span></div>
+      <div class="thethuc">TỈNH ỦY QUẢNG TRỊ<br>VĂN PHÒNG<span class="sao">*</span><span class="ky-hieu">ĐTH-VPTU</span></div>
       <div class="tieude">
         <h1>Chỉ số báo cáo tuần của tỉnh và các xã, phường, đặc khu</h1>
         <p class="phu">Tổng hợp báo cáo tuần của 78 đảng ủy xã, phường, đặc khu và 24 cơ quan, đơn vị cấp tỉnh; cảnh báo theo mốc tiến độ</p>
@@ -887,6 +890,7 @@ body { margin: 0; background: #F5F3F1; }
       </dl>
     </details>
   </main>
+  <footer class="ban-quyen"><div class="wrap"><span>© 2026 <b>ĐTH-VPTU</b>. Bản quyền thuộc ĐTH-VPTU; ghi rõ nguồn khi trích dẫn, sao chép.</span><span>Tỉnh ủy Quảng Trị · Văn phòng</span></div></footer>
 </div>
 
 <script>
