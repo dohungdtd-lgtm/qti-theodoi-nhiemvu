@@ -330,19 +330,12 @@ body { margin: 0; background: #F5F3F1; }
               </div>
             </div>
             <label class="truong qx-scope-xa"><span>Chỉ tiêu của xã</span>
-              <select class="dash-select qx-metric" aria-label="Chỉ tiêu tô màu bản đồ cấp xã">
+              <select class="dash-select qx-metric" aria-label="Chỉ tiêu tô màu bản đồ cấp xã" data-ban-do="1">
                 <option value="tl_gn">Tỷ lệ giải ngân vốn năm nay (%)</option>
                 <option value="tl_gn_nt">Tỷ lệ giải ngân vốn năm trước (%)</option>
                 <option value="nd_pct_xong">Nhà, đất dôi dư đã xử lý xong (%)</option>
                 <option value="tl_thu">Thu ngân sách so dự toán (%)</option>
                 <option value="khcn_tl">Giải ngân vốn KHCN, ĐMST, CĐS (%)</option>
-                <option value="tthc_dung_han">Hồ sơ TTHC giải quyết đúng hạn (%)</option>
-                <option value="dv_ket_nap_lk">Đảng viên kết nạp lũy kế</option>
-                <option value="viec_lam">Lao động được giải quyết việc làm</option>
-                <option value="kham_sk">Người được khám sức khỏe</option>
-                <option value="ky_nang_so">Người được hướng dẫn kỹ năng số</option>
-                <option value="can_kiem_tra">Số liệu cần kiểm tra lại</option>
-                <option value="tre_gio">Thời gian nộp trễ (giờ)</option>
               </select></label>
             <label class="truong qx-scope-tinh" hidden><span>Chỉ số toàn tỉnh</span>
               <select class="dash-select qx-chiso" data-draw="chiso-opt" data-source="tinh" aria-label="Chỉ số toàn tỉnh tô màu bản đồ"></select></label>
@@ -974,6 +967,8 @@ body { margin: 0; background: #F5F3F1; }
     const p = dash.params(); const q = (p.q || '').toLowerCase().trim();
     return g.data.filter((r) => (!p.loai || r.loai === p.loai) && (!p.nop || r.nop === p.nop) && (!q || r.xa.toLowerCase().includes(q)));
   };
+  window.QX_MAP_K = ['tl_gn', 'tl_gn_nt', 'nd_pct_xong', 'tl_thu', 'khcn_tl'];   // bản đồ cấp xã chỉ tô 05 chỉ số; chỉ số khác xem ở bảng xếp hạng
+  window.qxMapK = () => { const m = dash.params().metric; return QX_MAP_K.includes(m) ? m : 'tl_gn'; };
   window.qxPicked = () => {
     const g = dash.data('xa'); if (g.status !== 'ok') return null;
     const p = dash.params();
@@ -1028,7 +1023,7 @@ body { margin: 0; background: #F5F3F1; }
     const p = dash.params();
     document.querySelectorAll('.qx-loai').forEach((s) => { s.value = p.loai || ''; });
     document.querySelectorAll('.qx-nop').forEach((s) => { s.value = p.nop || ''; });
-    document.querySelectorAll('.qx-metric').forEach((s) => { s.value = p.metric || 'tl_gn'; });
+    document.querySelectorAll('.qx-metric').forEach((s) => { s.value = s.dataset.banDo ? qxMapK() : (p.metric || 'tl_gn'); });
     document.querySelectorAll('.qx-q').forEach((s) => { if (s !== document.activeElement) s.value = p.q || ''; });
   };
   document.querySelectorAll('.qx-loai').forEach((s) => s.addEventListener('change', () => dash.setParams({loai: s.value || null})));
@@ -1277,17 +1272,17 @@ body { margin: 0; background: #F5F3F1; }
       el.textContent = r.chi_tieu + ': ' + (r.dvt === '%' ? qxPct(r.so) : r.gia_tri) + ' (' + r.gia_tri + ', ' + r.thoi_diem + '). ' + QX_TEN_ST[s] + (m ? '; mốc an toàn ' + qxMocText(r.quy_tac) : '') + '. Nguồn: ' + r.co_quan + '.';
       return;
     }
-    el.textContent = qxNguong(dash.params().metric || 'tl_gn');
+    el.textContent = qxNguong(onMap ? qxMapK() : (dash.params().metric || 'tl_gn'));
   });
   dash.draw('mapn', (el) => {
     const g = dash.data('xa'); if (g.status !== 'ok') { el.textContent = '—'; return; }
-    const k = dash.params().metric || 'tl_gn';
+    const k = qxMapK();
     el.textContent = '(' + g.data.filter((r) => qxStatus(k, r[k]) === el.dataset.k).length + ')';
   });
   dash.draw('map', (el) => {
     el.replaceChildren();
     const geo = dash.data('geo'), g = dash.data('xa'); if (geo.status !== 'ok' || g.status !== 'ok') return;
-    const k = dash.params().metric || 'tl_gn'; const by = new Map(g.data.map((r) => [r.xa, r]));
+    const k = qxMapK(); const by = new Map(g.data.map((r) => [r.xa, r]));
     const tinh = qxScope() === 'tinh'; const cs = tinh ? qxChiSo() : null; const stT = cs ? qxTinhSt(cs) : 'neutral';
     const shapes = geo.data.map((d) => ({xa: d.xa, rings: JSON.parse(d.rings)}));
     const all = shapes.flatMap((s) => s.rings.flat());
