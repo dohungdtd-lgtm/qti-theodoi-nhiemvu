@@ -337,11 +337,14 @@ body { margin: 0; background: #F5F3F1; }
                 <option value="tl_thu">Thu ngân sách so dự toán (%)</option>
                 <option value="khcn_tl">Giải ngân vốn KHCN, ĐMST, CĐS (%)</option>
               </select></label>
+            <label class="truong qx-scope-xa"><span>Địa bàn Ủy viên BTV phụ trách</span>
+              <select class="dash-select qx-btv" aria-label="Lọc địa bàn theo Ủy viên Ban Thường vụ Tỉnh ủy phụ trách"><option value="">Tất cả địa bàn</option><option value="Nguyễn Lương Bình">Nguyễn Lương Bình</option><option value="Phạm Thị Minh Huệ">Phạm Thị Minh Huệ</option><option value="Trương An Ninh">Trương An Ninh</option><option value="Ly Kiều Vân">Ly Kiều Vân</option><option value="Hoàng Nam">Hoàng Nam</option><option value="Lê Văn Bảo">Lê Văn Bảo</option><option value="Phan Thắng">Phan Thắng</option><option value="Nguyễn Thanh Liêm">Nguyễn Thanh Liêm</option><option value="Đào Mạnh Hùng">Đào Mạnh Hùng</option><option value="Lê Quang Chiến">Lê Quang Chiến</option><option value="Phan Mạnh Hùng">Phan Mạnh Hùng</option><option value="Phạm Thị Hân">Phạm Thị Hân</option><option value="Lê Vĩnh Thế">Lê Vĩnh Thế</option><option value="Phạm Quang Long">Phạm Quang Long</option></select></label>
             <label class="truong qx-scope-tinh" hidden><span>Chỉ số toàn tỉnh</span>
               <select class="dash-select qx-chiso" data-draw="chiso-opt" data-source="tinh" aria-label="Chỉ số toàn tỉnh tô màu bản đồ"></select></label>
           </div>
           <div class="chugiai qx-scope-xa" style="margin:0 0 6px"><span><i class="cham good"></i>An toàn <b data-draw="mapn" data-k="good" data-source="xa">—</b></span><span><i class="cham warn"></i>Cảnh báo <b data-draw="mapn" data-k="warn" data-source="xa">—</b></span><span><i class="cham crit"></i>Báo động <b data-draw="mapn" data-k="crit" data-source="xa">—</b></span><span><i class="cham neutral"></i>Chưa có số liệu <b data-draw="mapn" data-k="neutral" data-source="xa">—</b></span></div>
           <p class="chuthich" data-draw="mapnguong" data-source="xa tinh">—</p>
+          <p class="chuthich btv-note" data-draw="btv-note" data-source="xa" hidden></p>
           <div class="chart" data-draw="map" data-source="geo xa tinh" style="min-height:420px"></div>
         </div>
       </div>
@@ -967,6 +970,10 @@ body { margin: 0; background: #F5F3F1; }
     const p = dash.params(); const q = (p.q || '').toLowerCase().trim();
     return g.data.filter((r) => (!p.loai || r.loai === p.loai) && (!p.nop || r.nop === p.nop) && (!q || r.xa.toLowerCase().includes(q)));
   };
+  // Phân công tạm thời theo Thông báo số 107-TB/TU, ngày 15/12/2025 và số 241-TB/TU, ngày 26/02/2026 của Ban Thường vụ Tỉnh ủy
+  window.QX_BTV = [{"ten": "Nguyễn Lương Bình", "chuc_vu": "UVBTV, Trưởng ban Tổ chức Tỉnh ủy", "xa": ["Xã Vĩnh Thủy", "Xã Cửa Tùng", "Xã Bến Hải", "Xã Gio Linh", "Xã Cửa Việt", "Xã Cồn Tiên"]}, {"ten": "Phạm Thị Minh Huệ", "chuc_vu": "UVBTV, Chủ nhiệm Ủy ban Kiểm tra Tỉnh ủy", "xa": ["Xã Quảng Ninh", "Xã Ninh Châu", "Xã Trường Ninh", "Xã Trường Sơn", "Xã Lệ Thủy", "Xã Cam Hồng", "Xã Sen Ngư"]}, {"ten": "Trương An Ninh", "chuc_vu": "UVBTV, Trưởng ban Tuyên giáo Tỉnh ủy", "xa": ["Xã Ái Tử", "Xã Triệu Phong", "Xã Triệu Bình", "Xã Triệu Cơ", "Xã Nam Cửa Việt", "Xã Vĩnh Định"]}, {"ten": "Ly Kiều Vân", "chuc_vu": "UVBTV, Trưởng ban Nội chính Tỉnh ủy", "xa": ["Xã Cam Lộ", "Xã Hiếu Giang", "Xã Hướng Hiệp", "Xã La Lay", "Xã Tà Rụt", "Xã Đakrông", "Xã Ba Lòng"]}, {"ten": "Hoàng Nam", "chuc_vu": "UVBTV, Phó Chủ tịch Thường trực UBND tỉnh", "xa": ["Xã Dân Hóa", "Xã Tân Thành", "Xã Kim Điền", "Xã Kim Phú", "Xã Minh Hóa", "Xã Tuyên Lâm", "Xã Tuyên Sơn", "Xã Đồng Lê"]}, {"ten": "Lê Văn Bảo", "chuc_vu": "UVBTV, Phó Chủ tịch UBND tỉnh", "xa": ["Xã Tuyên Phú", "Xã Tuyên Bình", "Xã Tuyên Hóa", "Xã Trung Thuần", "Xã Tân Gianh", "Xã Quảng Trạch", "Xã Hòa Trạch", "Xã Phú Trạch"]}, {"ten": "Phan Thắng", "chuc_vu": "UVBTV, Chỉ huy trưởng Bộ Chỉ huy Quân sự tỉnh", "xa": ["Xã Mỹ Thủy", "Xã Hải Lăng", "Xã Nam Hải Lăng", "Xã Diên Sanh", "Phường Quảng Trị", "Đặc khu Cồn Cỏ"]}, {"ten": "Nguyễn Thanh Liêm", "chuc_vu": "UVBTV, Giám đốc Công an tỉnh", "xa": ["Xã Hướng Lập", "Xã Hướng Phùng", "Xã Khe Sanh", "Xã Tân Lập", "Xã Lao Bảo", "Xã Lìa", "Xã A Dơi"]}, {"ten": "Đào Mạnh Hùng", "chuc_vu": "UVBTV, Phó Chủ tịch Thường trực UBMTTQVN tỉnh", "xa": ["Xã Thượng Trạch", "Xã Phong Nha", "Xã Bắc Trạch", "Xã Đông Trạch", "Xã Hoàn Lão", "Xã Bố Trạch", "Xã Nam Trạch"]}, {"ten": "Lê Quang Chiến", "chuc_vu": "UVBTV, Bí thư Đảng ủy phường Đông Hà", "xa": ["Phường Đông Hà", "Phường Nam Đông Hà"]}, {"ten": "Phan Mạnh Hùng", "chuc_vu": "UVBTV, Bí thư Đảng ủy phường Đồng Hới", "xa": ["Phường Đồng Hới", "Phường Đồng Sơn", "Phường Đồng Thuận"]}, {"ten": "Phạm Thị Hân", "chuc_vu": "UVBTV, Phó Chủ tịch Thường trực HĐND tỉnh", "xa": ["Phường Ba Đồn", "Phường Bắc Gianh", "Xã Nam Gianh", "Xã Nam Ba Đồn"]}, {"ten": "Lê Vĩnh Thế", "chuc_vu": "UVBTV, Chánh Văn phòng Tỉnh ủy", "xa": ["Xã Tân Mỹ", "Xã Lệ Ninh", "Xã Trường Phú", "Xã Kim Ngân", "Xã Vĩnh Linh", "Xã Vĩnh Hoàng", "Xã Bến Quan"]}, {"ten": "Phạm Quang Long", "chuc_vu": "UVBTV, Trưởng ban Quản lý Khu Kinh tế tỉnh", "xa": ["Xã Lao Bảo", "Xã Mỹ Thủy"]}];
+  window.qxBtv = () => { const t = dash.params().btv; const b = t && QX_BTV.find((x) => x.ten === t); return b ? b : null; };
+  window.qxBtvSet = () => { const b = qxBtv(); return b ? new Set(b.xa) : null; };
   window.QX_MAP_K = ['tl_gn', 'tl_gn_nt', 'nd_pct_xong', 'tl_thu', 'khcn_tl'];   // bản đồ cấp xã chỉ tô 05 chỉ số; chỉ số khác xem ở bảng xếp hạng
   window.qxMapK = () => { const m = dash.params().metric; return QX_MAP_K.includes(m) ? m : 'tl_gn'; };
   window.qxPicked = () => {
@@ -1018,17 +1025,19 @@ body { margin: 0; background: #F5F3F1; }
   });
 
   // ---------- bộ lọc ----------
-  const QX_DEF = {loai: '', nop: '', metric: 'tl_gn', q: '', xa: '', pham_vi: 'xa', dat_nhom: '', dat_cq: '', dat_tt: '', dat_q: '', nv_dv: '', nv_tt: '', tg_md: '', tg_nv: '', tg_vm: '', tg_td: '', tg_tq: '', tg_151: '', tg_q: '', nd_cap: '', nd_dv: '', nd_tt: '', nd_ht: '', nd_ng: '', nd_q: '', nvg_tt: '', nvg_ng: '', nvg_dv: '', nvg_q: '', nvg_v: '', nvg_vb: '', nvg_lv: '', nvg_dm: '', nvg_dk: '', nvg_tu: '', nvg_den: '', nvg_sx: '', nvg_n: '', nvg_tk: '', nvg_nkq: ''};
+  const QX_DEF = {btv: '', loai: '', nop: '', metric: 'tl_gn', q: '', xa: '', pham_vi: 'xa', dat_nhom: '', dat_cq: '', dat_tt: '', dat_q: '', nv_dv: '', nv_tt: '', tg_md: '', tg_nv: '', tg_vm: '', tg_td: '', tg_tq: '', tg_151: '', tg_q: '', nd_cap: '', nd_dv: '', nd_tt: '', nd_ht: '', nd_ng: '', nd_q: '', nvg_tt: '', nvg_ng: '', nvg_dv: '', nvg_q: '', nvg_v: '', nvg_vb: '', nvg_lv: '', nvg_dm: '', nvg_dk: '', nvg_tu: '', nvg_den: '', nvg_sx: '', nvg_n: '', nvg_tk: '', nvg_nkq: ''};
   const sync = () => {
     const p = dash.params();
     document.querySelectorAll('.qx-loai').forEach((s) => { s.value = p.loai || ''; });
     document.querySelectorAll('.qx-nop').forEach((s) => { s.value = p.nop || ''; });
     document.querySelectorAll('.qx-metric').forEach((s) => { s.value = s.dataset.banDo ? qxMapK() : (p.metric || 'tl_gn'); });
     document.querySelectorAll('.qx-q').forEach((s) => { if (s !== document.activeElement) s.value = p.q || ''; });
+    document.querySelectorAll('.qx-btv').forEach((s) => { s.value = p.btv || ''; });
   };
   document.querySelectorAll('.qx-loai').forEach((s) => s.addEventListener('change', () => dash.setParams({loai: s.value || null})));
   document.querySelectorAll('.qx-nop').forEach((s) => s.addEventListener('change', () => dash.setParams({nop: s.value || null})));
   document.querySelectorAll('.qx-metric').forEach((s) => s.addEventListener('change', () => dash.setParams({metric: s.value})));
+  document.querySelectorAll('.qx-btv').forEach((s) => s.addEventListener('change', () => dash.setParams({btv: s.value || null, xa: null})));
   document.querySelectorAll('.qx-q').forEach((s) => s.addEventListener('input', () => {
     const v = s.value.trim(); const g = dash.data('xa');
     const one = g.status === 'ok' ? g.data.filter((r) => r.xa.toLowerCase().includes(v.toLowerCase())) : [];
@@ -1274,15 +1283,19 @@ body { margin: 0; background: #F5F3F1; }
     }
     el.textContent = qxNguong(onMap ? qxMapK() : (dash.params().metric || 'tl_gn'));
   });
+  dash.draw('btv-note', (el) => {
+    const b = qxScope() === 'tinh' ? null : qxBtv(); el.hidden = !b; if (!b) { el.textContent = ''; return; }
+    el.textContent = 'Đồng chí ' + b.ten + ' (' + b.chuc_vu + ') phụ trách ' + b.xa.length + ' địa bàn: ' + b.xa.join(', ') + '. Phân công tạm thời theo Thông báo số 107-TB/TU và 241-TB/TU của Ban Thường vụ Tỉnh ủy.';
+  });
   dash.draw('mapn', (el) => {
     const g = dash.data('xa'); if (g.status !== 'ok') { el.textContent = '—'; return; }
-    const k = qxMapK();
-    el.textContent = '(' + g.data.filter((r) => qxStatus(k, r[k]) === el.dataset.k).length + ')';
+    const k = qxMapK(); const S = qxBtvSet();
+    el.textContent = '(' + g.data.filter((r) => (!S || S.has(r.xa)) && qxStatus(k, r[k]) === el.dataset.k).length + ')';
   });
   dash.draw('map', (el) => {
     el.replaceChildren();
     const geo = dash.data('geo'), g = dash.data('xa'); if (geo.status !== 'ok' || g.status !== 'ok') return;
-    const k = qxMapK(); const by = new Map(g.data.map((r) => [r.xa, r]));
+    const k = qxMapK(); const by = new Map(g.data.map((r) => [r.xa, r])); const S0 = qxBtvSet();
     const tinh = qxScope() === 'tinh'; const cs = tinh ? qxChiSo() : null; const stT = cs ? qxTinhSt(cs) : 'neutral';
     const shapes = geo.data.map((d) => ({xa: d.xa, rings: JSON.parse(d.rings)}));
     const all = shapes.flatMap((s) => s.rings.flat());
@@ -1296,12 +1309,12 @@ body { margin: 0; background: #F5F3F1; }
     const pick = dash.params().xa ? qxPicked() : null; const tip = qxTip(el);   // chỉ viền khi người xem chủ động chọn xã; mặc định tô đồng bộ
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Bản đồ các xã tô màu theo mức cảnh báo');
     svg.append('g').selectAll('path').data(shapes).join('path').attr('d', (d) => path(d.rings))
-      .attr('fill', (d) => { if (tinh) return qxStColor(stT); const r = by.get(d.xa); return qxStColor(qxStatus(k, r ? r[k] : null)); })
-      .attr('fill-opacity', .78)
+      .attr('fill', (d) => { if (tinh) return qxStColor(stT); if (S0 && !S0.has(d.xa)) return qxVar('--surface-2'); const r = by.get(d.xa); return qxStColor(qxStatus(k, r ? r[k] : null)); })
+      .attr('fill-opacity', (d) => !tinh && S0 ? (S0.has(d.xa) ? .95 : .55) : .78)
       .attr('stroke', qxVar('--surface')).attr('stroke-width', tinh ? .4 : .8)
-      .style('cursor', 'pointer')
-      .on('click', (e, d) => qxPick(d.xa))
-      .on('mousemove', (e, d) => { const r = by.get(d.xa) || {}; const [mx, my] = d3.pointer(e, el);
+      .style('cursor', (d) => !tinh && S0 && !S0.has(d.xa) ? 'default' : 'pointer')
+      .on('click', (e, d) => { if (!tinh && S0 && !S0.has(d.xa)) return; qxPick(d.xa); })
+      .on('mousemove', (e, d) => { if (!tinh && S0 && !S0.has(d.xa)) { tip.hidden = true; return; } const r = by.get(d.xa) || {}; const [mx, my] = d3.pointer(e, el);
         if (tinh) qxTipText(tip, 'Toàn tỉnh', [cs ? cs.chi_tieu : '', cs ? (cs.dvt === '%' ? qxPct(cs.so) : cs.gia_tri) + ' · ' + QX_TEN_ST[stT] : '']);
         else qxTipText(tip, d.xa, [(r[k] == null ? 'Chưa có số liệu' : qxFmt(k, +r[k])) + ' · ' + QX_TEN_ST[qxStatus(k, r[k])], r.can_kiem_tra ? r.can_kiem_tra + ' số liệu cần kiểm tra' : '']);
         qxPlace(el, tip, mx, my); })
@@ -1311,6 +1324,7 @@ body { margin: 0; background: #F5F3F1; }
       t.append('text').attr('font-size', 30).attr('font-weight', 700).attr('fill', qxStColor(stT)).text(cs.dvt === '%' ? qxPct(cs.so) : cs.gia_tri);
       t.append('text').attr('y', 20).attr('font-size', 12).attr('fill', qxVar('--ink-2')).text('Toàn tỉnh · ' + QX_TEN_ST[stT]);
     }
+    if (!tinh && S0) svg.append('g').attr('pointer-events', 'none').selectAll('path').data(shapes.filter((d) => S0.has(d.xa))).join('path').attr('d', (d) => path(d.rings)).attr('fill', 'none').attr('stroke', qxVar('--ink-2')).attr('stroke-width', .9);
     if (!tinh && pick) { const s = shapes.find((d) => d.xa === pick.xa); if (s) svg.append('path').attr('d', path(s.rings)).attr('fill', 'none').attr('stroke', qxVar('--ink')).attr('stroke-width', 2).attr('pointer-events', 'none'); }
   });
 
