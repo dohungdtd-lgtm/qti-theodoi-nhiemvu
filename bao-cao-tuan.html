@@ -1298,12 +1298,12 @@ body { margin: 0; background: #F5F3F1; }
     const H = Math.round((y1 - y0) * sc + 2 * pad);
     const px = (p) => [pad + (p[0] - x0) * kx * sc, pad + (y1 - p[1]) * sc];
     const path = (rings) => rings.map((r) => 'M' + r.map((p) => px(p).map((v) => v.toFixed(1)).join(',')).join('L') + 'Z').join('');
-    const pick = qxPicked(); const tip = qxTip(el);
+    const pick = dash.params().xa ? qxPicked() : null; const tip = qxTip(el);   // chỉ viền khi người xem chủ động chọn xã; mặc định tô đồng bộ
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Bản đồ các xã tô màu theo mức cảnh báo');
     svg.append('g').selectAll('path').data(shapes).join('path').attr('d', (d) => path(d.rings))
       .attr('fill', (d) => { if (tinh) return qxStColor(stT); const r = by.get(d.xa); return qxStColor(qxStatus(k, r ? r[k] : null)); })
-      .attr('fill-opacity', (d) => pick && d.xa === pick.xa ? 1 : .78)
-      .attr('stroke', (d) => !tinh && pick && d.xa === pick.xa ? qxVar('--ink') : qxVar('--surface')).attr('stroke-width', (d) => !tinh && pick && d.xa === pick.xa ? 2 : (tinh ? .4 : .8))
+      .attr('fill-opacity', .78)
+      .attr('stroke', qxVar('--surface')).attr('stroke-width', tinh ? .4 : .8)
       .style('cursor', 'pointer')
       .on('click', (e, d) => qxPick(d.xa))
       .on('mousemove', (e, d) => { const r = by.get(d.xa) || {}; const [mx, my] = d3.pointer(e, el);
