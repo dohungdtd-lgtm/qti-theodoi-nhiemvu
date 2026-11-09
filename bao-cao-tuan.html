@@ -620,18 +620,11 @@ body { margin: 0; background: #F5F3F1; }
         <div class="warn"><span class="nhan">Còn phải xử lý</span><span class="so" data-draw="dat-so" data-k="con" data-source="dat">—</span><span class="chuthich" data-draw="dat-so-gc" data-k="con" data-source="dat">—</span></div>
         <div class="crit"><span class="nhan">Nhiệm vụ TB 119 quá hạn</span><span class="so" data-draw="nv-so" data-k="Quá hạn" data-source="nv">—</span><span class="chuthich" data-draw="nv-so-gc" data-source="nv">—</span></div>
       </div>
-      <div class="c12 panel" id="dat-so-sanh">
-        <header><h2>So sánh với kỳ gốc</h2><span class="chuthich">Kỳ gốc: phụ lục 151 dự án Sở Tài chính cập nhật 09/2026, báo cáo tại cuộc làm việc của đồng chí Phó Bí thư Thường trực Tỉnh ủy (kết luận tại Thông báo 119-TB/VPTU ngày 13/10/2026). "Hiện nay" lấy theo báo cáo tuần gần nhất của cơ quan theo dõi; cơ quan chưa báo cáo thì lấy theo danh mục.</span></header>
-        <div class="than">
-          <div class="chart" data-draw="dat-ss-chart" data-source="dat dbc" style="min-height:0;margin-bottom:6px"></div>
-          <div class="cuon"><table class="tk" data-draw="dat-ss" data-source="dat dbc"></table></div>
-          <p class="chuthich" data-draw="dat-ss-gc" data-source="dat dbc" style="margin-top:8px">—</p>
-        </div>
-      </div>
       <div class="c7 panel">
-        <header><h2>Kết quả theo nhóm xử lý</h2><span class="chuthich">Xanh: đã chấm dứt, hoàn thành; xanh lam: đã gia hạn; vàng: đang xử lý; đỏ: chưa nêu tình hình, phương án trong phụ lục</span></header>
+        <header><h2>Kết quả theo nhóm xử lý, so với kỳ gốc</h2><span class="chuthich">Xanh: đã chấm dứt, hoàn thành; xanh lam: đã gia hạn; vàng: đang xử lý; đỏ: chưa nêu tình hình, phương án. Mỗi nhóm có hai thanh: thanh nhạt là kỳ gốc (phụ lục 09/2026, báo cáo tại cuộc làm việc của đồng chí Phó Bí thư Thường trực Tỉnh ủy, Thông báo 119-TB/VPTU ngày 13/10/2026), thanh đậm là hiện nay</span></header>
         <div class="chart donut-1" style="min-height:0;margin:10px 18px 0" data-draw="donut" data-k="dat" data-source="dat"></div>
-        <div class="than" data-draw="dat-nhom" data-source="dat"></div>
+        <p class="chuthich" data-draw="dat-ss-gc" data-source="dat dbc" style="margin:6px 18px 0">—</p>
+        <div class="than" data-draw="dat-nhom" data-source="dat dbc"></div>
       </div>
       <div class="c5 panel">
         <header><h2>Các mốc theo Thông báo 119</h2><span class="chuthich" data-draw="dat-hom-nay" data-source="dat">—</span></header>
@@ -835,12 +828,16 @@ body { margin: 0; background: #F5F3F1; }
     <section data-page="bang" id="trang-bang" class="luoi" hidden>
       <div class="c12 panel">
         <header><h2>Bảng số liệu các đơn vị</h2><span class="chuthich">Bấm tiêu đề cột để sắp xếp; bấm dòng để xem chi tiết; màu theo mốc cảnh báo</span></header>
+        <p class="chuthich btv-note" data-draw="btv-note" data-source="xa" hidden style="margin:0 18px"></p>
         <div class="than">
           <div class="loc" style="margin-bottom:10px">
             <label class="truong"><span>Loại đơn vị</span><select class="dash-select qx-loai" aria-label="Loại đơn vị (bảng)"><option value="">Tất cả (78)</option><option value="Xã">Xã</option><option value="Phường">Phường</option><option value="Đặc khu">Đặc khu</option></select></label>
             <label class="truong"><span>Tình trạng nộp</span><select class="dash-select qx-nop" aria-label="Tình trạng nộp (bảng)"><option value="">Tất cả</option><option value="Đúng hạn">Đúng hạn</option><option value="Trễ hạn">Trễ hạn</option></select></label>
+            <label class="truong"><span>Ủy viên BTV phụ trách</span><select class="dash-select qx-btv" aria-label="Lọc theo Ủy viên Ban Thường vụ Tỉnh ủy phụ trách (bảng)"><option value="">Tất cả địa bàn</option><option value="Nguyễn Lương Bình">Nguyễn Lương Bình</option><option value="Phạm Thị Minh Huệ">Phạm Thị Minh Huệ</option><option value="Trương An Ninh">Trương An Ninh</option><option value="Ly Kiều Vân">Ly Kiều Vân</option><option value="Hoàng Nam">Hoàng Nam</option><option value="Lê Văn Bảo">Lê Văn Bảo</option><option value="Phan Thắng">Phan Thắng</option><option value="Nguyễn Thanh Liêm">Nguyễn Thanh Liêm</option><option value="Đào Mạnh Hùng">Đào Mạnh Hùng</option><option value="Lê Quang Chiến">Lê Quang Chiến</option><option value="Phan Mạnh Hùng">Phan Mạnh Hùng</option><option value="Phạm Thị Hân">Phạm Thị Hân</option><option value="Lê Vĩnh Thế">Lê Vĩnh Thế</option><option value="Phạm Quang Long">Phạm Quang Long</option></select></label>
             <label class="truong"><span>Tìm đơn vị</span><input class="qx-q" id="qx-q2" type="search" placeholder="Gõ tên xã, phường…" aria-label="Tìm đơn vị (bảng)"></label>
             <button class="btn qx-reset" type="button">Đặt lại</button>
+            <button class="btn qx-docx" type="button" title="Xuất bảng đang lọc ra file Word">Xuất file Word (.docx)</button>
+            <button class="btn qx-ve-tq" type="button" title="Xem các địa bàn này trên bản đồ Tổng quan">Xem trên bản đồ ›</button>
           </div>
           <div class="cuon">
             <table class="tk" data-source="xa" data-row-key="xa">
@@ -1250,10 +1247,66 @@ body { margin: 0; background: #F5F3F1; }
     dash.draw('xa-body');
   }));
   document.querySelectorAll('[data-sort="tl_gn"]').forEach((b) => b.closest('th').setAttribute('aria-sort', 'descending'));
+
+  // ---------- Xuất bảng số liệu ra file Word (.docx), dựng file ngay trong trình duyệt ----------
+  window.qxBangRows = () => { const S0 = qxBtvSet(); const {k, dir} = qxSort;
+    return qxShown().filter((r) => !S0 || S0.has(r.xa)).slice().sort((a, b) => { if (k === 'xa') return dir * a.xa.localeCompare(b.xa, 'vi');
+      const va = a[k], vb = b[k]; if (va == null && vb == null) return 0; if (va == null) return 1; if (vb == null) return -1; return dir * (va - vb); }); };
+  window.qxZip = (files) => {   // ZIP không nén (store) đủ cho Word đọc
+    const T = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; T[n] = c >>> 0; }
+    const crc = (u) => { let c = 0xFFFFFFFF; for (let i = 0; i < u.length; i++) c = T[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+    const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+    files.forEach(([name, txt]) => { const nb = enc.encode(name), d = enc.encode(txt), c = crc(d);
+      const h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint32(14, c, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true); h.setUint16(26, nb.length, true);
+      parts.push(new Uint8Array(h.buffer), nb, d);
+      const e = new DataView(new ArrayBuffer(46)); e.setUint32(0, 0x02014b50, true); e.setUint16(4, 20, true); e.setUint16(6, 20, true); e.setUint16(8, 0x0800, true); e.setUint32(16, c, true); e.setUint32(20, d.length, true); e.setUint32(24, d.length, true); e.setUint16(28, nb.length, true); e.setUint32(42, off, true);
+      cen.push(new Uint8Array(e.buffer), nb); off += 30 + nb.length + d.length; });
+    const cl = cen.reduce((a, x) => a + x.length, 0), z = new DataView(new ArrayBuffer(22));
+    z.setUint32(0, 0x06054b50, true); z.setUint16(8, files.length, true); z.setUint16(10, files.length, true); z.setUint32(12, cl, true); z.setUint32(16, off, true);
+    return new Blob([...parts, ...cen, new Uint8Array(z.buffer)]);
+  };
+  window.qxDocxBang = () => {
+    const esc = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const run = (t, o = {}) => '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>' + (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + '<w:sz w:val="' + (o.sz || 24) + '"/></w:rPr><w:t xml:space="preserve">' + esc(t) + '</w:t></w:r>';
+    const para = (t, o = {}) => '<w:p><w:pPr><w:spacing w:before="' + (o.tr || 0) + '" w:after="' + (o.sau ?? 60) + '"/><w:jc w:val="' + (o.jc || 'both') + '"/></w:pPr>' + run(t, o) + '</w:p>';
+    const W = [500, 2300, 1300, 1150, 1150, 1150, 1150, 1150, 1000, 900], tong = W.reduce((a, b) => a + b, 0);
+    const cell = (t, w, o = {}) => '<w:tc><w:tcPr><w:tcW w:w="' + w + '" w:type="dxa"/>' + (o.fill ? '<w:shd w:val="clear" w:color="auto" w:fill="' + o.fill + '"/>' : '') + '<w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:before="20" w:after="20"/><w:jc w:val="' + (o.jc || 'center') + '"/></w:pPr>' + run(t, {b: o.b, sz: 22}) + '</w:p></w:tc>';
+    const row = (cells, hdr) => '<w:tr>' + (hdr ? '<w:trPr><w:tblHeader/><w:cantSplit/></w:trPr>' : '<w:trPr><w:cantSplit/></w:trPr>') + cells + '</w:tr>';
+    const f = (v) => v == null ? '' : qxF1(v), sF = {crit: 'F4CCCC', warn: 'FFF2CC'};
+    const H = ['TT', 'Đơn vị', 'Nộp báo cáo', 'Giải ngân vốn năm nay (%)', 'Vốn năm trước (%)', 'Nhà, đất xử lý xong (%)', 'Thu NS so dự toán (%)', 'Giải ngân vốn KHCN (%)', 'Kết nạp đảng viên', 'Số liệu cần kiểm tra'];
+    const R = qxBangRows(), b = qxBtv(), tuan = (document.querySelector('.tuan-the.hien b') || {}).textContent || '', ky = (document.querySelector('.tuan-the.hien small') || {}).textContent || '';
+    let tbl = '<w:tbl><w:tblPr><w:tblW w:w="' + tong + '" w:type="dxa"/><w:jc w:val="center"/><w:tblLayout w:type="fixed"/><w:tblBorders>' + ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map((x) => '<w:' + x + ' w:val="single" w:sz="4" w:space="0" w:color="000000"/>').join('') + '</w:tblBorders></w:tblPr><w:tblGrid>' + W.map((w) => '<w:gridCol w:w="' + w + '"/>').join('') + '</w:tblGrid>';
+    tbl += row(H.map((h, i) => cell(h, W[i], {b: true, fill: 'E7E6E6'})).join(''), true);
+    R.forEach((r, i) => { const st = (k) => sF[qxSt(k, r[k])];
+      tbl += row([cell(i + 1, W[0]), cell(r.xa, W[1], {jc: 'left'}), cell(r.nop === 'Trễ hạn' ? 'Trễ ' + qxF1(r.tre_gio) + ' giờ' : r.nop || '', W[2]),
+        cell(f(r.tl_gn), W[3], {fill: st('tl_gn')}), cell(f(r.tl_gn_nt), W[4], {fill: st('tl_gn_nt')}), cell(f(r.nd_pct_xong), W[5], {fill: st('nd_pct_xong')}),
+        cell(f(r.tl_thu), W[6]), cell(f(r.khcn_tl), W[7]), cell(r.dv_ket_nap_lk == null ? '' : qxNum(r.dv_ket_nap_lk), W[8]), cell(r.can_kiem_tra || 0, W[9])].join('')); });
+    tbl += '</w:tbl>';
+    const c = (k, s) => R.filter((r) => qxSt(k, r[k]) === s).length;
+    const body = para('BẢNG SỐ LIỆU CÁC XÃ, PHƯỜNG, ĐẶC KHU - ' + tuan.toUpperCase(), {b: true, sz: 28, jc: 'center', sau: 40})
+      + para(b ? 'Địa bàn đồng chí ' + b.ten + ' (' + b.chuc_vu + ') phụ trách: ' + R.length + ' đơn vị' : 'Toàn tỉnh: ' + R.length + ' đơn vị', {b: true, jc: 'center', sau: 40})
+      + para(ky, {i: true, jc: 'center', sau: 160, sz: 22})
+      + para('Tóm tắt: giải ngân vốn năm nay có ' + c('tl_gn', 'crit') + ' đơn vị ở mức báo động, ' + c('tl_gn', 'warn') + ' đơn vị ở mức cảnh báo (' + qxNguong('tl_gn') + '); nhà, đất dôi dư có ' + c('nd_pct_xong', 'crit') + ' đơn vị ở mức báo động; ' + R.filter((r) => r.nop !== 'Đúng hạn').length + ' đơn vị nộp báo cáo không đúng hạn hoặc chưa nộp.', {sau: 120})
+      + tbl
+      + para('Ghi chú: ô tô đỏ là mức báo động, tô vàng là mức cảnh báo theo mốc tiến độ. Số liệu do đảng ủy các xã, phường, đặc khu tự báo cáo qua biểu mẫu điện tử, Văn phòng Tỉnh ủy mới kiểm tra bước đầu; bản thử nghiệm, chỉ dùng tham khảo. Nguồn: Quang Tri Weekly Index.', {i: true, sz: 22, tr: 120});
+    const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + body
+      + '<w:sectPr><w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/><w:pgMar w:top="1134" w:right="851" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>';
+    return qxZip([['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
+      ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
+      ['word/document.xml', doc]]);
+  };
+  document.querySelectorAll('.qx-docx').forEach((btn) => btn.addEventListener('click', async () => {
+    const blob = qxDocxBang(), b = qxBtv(), tuan = ((document.querySelector('.tuan-the.hien b') || {}).textContent || '').replace(/\s+/g, ' ').trim();
+    const name = ('Bang so lieu cac xa - ' + tuan + (b ? ' - dia ban dc ' + b.ten : ' - toan tinh')).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D') + '.docx';
+    let dl = null; try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { dl = null; }
+    if (dl) { try { await dl.save({filename: name, data: blob}); } catch (e) { if (e && e.code !== 'declined') { btn.textContent = 'Không xuất được ở khung này, hãy mở trang trên trình duyệt'; setTimeout(() => { btn.textContent = 'Xuất file Word (.docx)'; }, 5000); } } return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }));
+  document.querySelectorAll('.qx-ve-tq').forEach((btn) => btn.addEventListener('click', () => qxGo('tq', {pham_vi: 'xa'})));
   dash.draw('xa-body', (tb) => {
     tb.replaceChildren(); if (dash.data('xa').status !== 'ok') return;
     const {k, dir} = qxSort; const pick = qxPicked();
-    const rows = qxShown().slice().sort((a, b) => {
+    const S0 = qxBtvSet(); const rows = qxShown().filter((r) => !S0 || S0.has(r.xa)).slice().sort((a, b) => {
       if (k === 'xa') return dir * a.xa.localeCompare(b.xa, 'vi');
       const va = a[k], vb = b[k]; if (va == null && vb == null) return 0; if (va == null) return 1; if (vb == null) return -1; return dir * (va - vb);
     });
@@ -1598,11 +1651,18 @@ body { margin: 0; background: #F5F3F1; }
       const t = document.createElement('b'); t.textContent = ten[n]; const s = document.createElement('span'); s.className = 'num'; s.style.color = 'var(--ink-2)';
       s.textContent = R.length + ' dự án · xong ' + cnt('good') + ' · gia hạn ' + cnt('neutral') + ' · đang xử lý ' + cnt('warn') + (cnt('crit') ? ' · chưa nêu phương án ' + cnt('crit') : '');
       top.append(t, s);
-      const bar = document.createElement('div'); bar.className = 'nd-thanh'; bar.style.cssText = 'width:100%;height:14px;cursor:pointer';
-      ['good', 'neutral', 'warn', 'crit'].forEach((c) => { const v = cnt(c); if (!v) return; const i = document.createElement('i'); i.className = c; i.style.flex = v; i.title = v + ' dự án'; bar.appendChild(i); });
-      bar.addEventListener('click', () => dash.setParams({dat_nhom: String(n)}));
+      const cntG = (s) => R.filter((r) => qxDatStGoc(r) === s).length;
+      const mk = (f, nhan, nhat) => { const w = document.createElement('div'); w.style.cssText = 'display:grid;grid-template-columns:62px 1fr 46px;gap:8px;align-items:center';
+        const l = document.createElement('span'); l.className = 'chuthich'; l.textContent = nhan;
+        const bar = document.createElement('div'); bar.className = 'nd-thanh'; bar.style.cssText = 'width:100%;height:13px;cursor:pointer' + (nhat ? ';opacity:.45' : '');
+        ['good', 'neutral', 'warn', 'crit'].forEach((c) => { const v = f(c); if (!v) return; const i = document.createElement('i'); i.className = c; i.style.flex = v; i.title = nhan + ': ' + v + ' dự án'; bar.appendChild(i); });
+        bar.addEventListener('click', () => dash.setParams({dat_nhom: String(n)}));
+        const pc = document.createElement('span'); pc.className = 'num chuthich'; pc.style.textAlign = 'right'; pc.textContent = qxF1(R.length ? f('good') / R.length * 100 : 0) + '%'; pc.title = 'Tỷ lệ xử lý dứt điểm';
+        w.append(l, bar, pc); return w; };
+      const d = cnt('good') - cntG('good'); const dd = document.createElement('span'); dd.className = 'chuthich'; dd.textContent = d > 0 ? 'Tăng ' + d + ' dự án xử lý xong so với kỳ gốc' : 'Chưa có chuyển biến so với kỳ gốc';
+      if (d > 0) dd.style.color = 'var(--st-good)';
       const m = document.createElement('span'); m.className = 'chuthich'; m.textContent = 'Yêu cầu: ' + muc[n];
-      box.append(top, bar, m); el.appendChild(box);
+      box.append(top, mk(cntG, 'Kỳ gốc', true), mk(cnt, 'Hiện nay', false), dd, m); el.appendChild(box);
     });
   });
   dash.draw('dat-hom-nay', (el) => { el.textContent = 'Tính đến ngày ' + qxDMY(qxHomNay()); });
@@ -1666,6 +1726,7 @@ body { margin: 0; background: #F5F3F1; }
   });
 
   // ---------- So sánh 151 dự án với kỳ gốc (Thông báo 119) ----------
+  window.qxDatStGoc = (r) => /chấm dứt|hoàn thành/i.test(r.tt_goc || r.trang_thai) ? 'good' : (r.tt_goc || r.trang_thai) === 'Đã gia hạn' ? 'neutral' : (r.co_pa_goc ?? r.co_pa) ? 'warn' : 'crit';
   window.qxDatDoi = (r) => !!r.tt_goc && (r.tt_goc !== r.trang_thai || (!r.co_pa_goc && r.co_pa));
   window.qxDatBc = () => { const g = dash.data('dbc'); return g.status === 'ok' ? g.data : []; };
   window.qxDatSs = () => {
