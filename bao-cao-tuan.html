@@ -1266,43 +1266,17 @@ body { margin: 0; background: #F5F3F1; }
     z.setUint32(0, 0x06054b50, true); z.setUint16(8, files.length, true); z.setUint16(10, files.length, true); z.setUint32(12, cl, true); z.setUint32(16, off, true);
     return new Blob([...parts, ...cen, new Uint8Array(z.buffer)]);
   };
-  window.qxDocxBang = () => {
-    const esc = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const run = (t, o = {}) => '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>' + (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + '<w:sz w:val="' + (o.sz || 24) + '"/></w:rPr><w:t xml:space="preserve">' + esc(t) + '</w:t></w:r>';
-    const para = (t, o = {}) => '<w:p><w:pPr><w:spacing w:before="' + (o.tr || 0) + '" w:after="' + (o.sau ?? 60) + '"/><w:jc w:val="' + (o.jc || 'both') + '"/></w:pPr>' + run(t, o) + '</w:p>';
-    const W = [500, 2300, 1300, 1150, 1150, 1150, 1150, 1150, 1000, 900], tong = W.reduce((a, b) => a + b, 0);
-    const cell = (t, w, o = {}) => '<w:tc><w:tcPr><w:tcW w:w="' + w + '" w:type="dxa"/>' + (o.fill ? '<w:shd w:val="clear" w:color="auto" w:fill="' + o.fill + '"/>' : '') + '<w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:before="20" w:after="20"/><w:jc w:val="' + (o.jc || 'center') + '"/></w:pPr>' + run(t, {b: o.b, sz: 22}) + '</w:p></w:tc>';
-    const row = (cells, hdr) => '<w:tr>' + (hdr ? '<w:trPr><w:tblHeader/><w:cantSplit/></w:trPr>' : '<w:trPr><w:cantSplit/></w:trPr>') + cells + '</w:tr>';
-    const f = (v) => v == null ? '' : qxF1(v), sF = {crit: 'F4CCCC', warn: 'FFF2CC'};
-    const H = ['TT', 'Đơn vị', 'Nộp báo cáo', 'Giải ngân vốn năm nay (%)', 'Vốn năm trước (%)', 'Nhà, đất xử lý xong (%)', 'Thu NS so dự toán (%)', 'Giải ngân vốn KHCN (%)', 'Kết nạp đảng viên', 'Số liệu cần kiểm tra'];
-    const R = qxBangRows(), b = qxBtv(), tuan = (document.querySelector('.tuan-the.hien b') || {}).textContent || '', ky = (document.querySelector('.tuan-the.hien small') || {}).textContent || '';
-    let tbl = '<w:tbl><w:tblPr><w:tblW w:w="' + tong + '" w:type="dxa"/><w:jc w:val="center"/><w:tblLayout w:type="fixed"/><w:tblBorders>' + ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map((x) => '<w:' + x + ' w:val="single" w:sz="4" w:space="0" w:color="000000"/>').join('') + '</w:tblBorders></w:tblPr><w:tblGrid>' + W.map((w) => '<w:gridCol w:w="' + w + '"/>').join('') + '</w:tblGrid>';
-    tbl += row(H.map((h, i) => cell(h, W[i], {b: true, fill: 'E7E6E6'})).join(''), true);
-    R.forEach((r, i) => { const st = (k) => sF[qxSt(k, r[k])];
-      tbl += row([cell(i + 1, W[0]), cell(r.xa, W[1], {jc: 'left'}), cell(r.nop === 'Trễ hạn' ? 'Trễ ' + qxF1(r.tre_gio) + ' giờ' : r.nop || '', W[2]),
-        cell(f(r.tl_gn), W[3], {fill: st('tl_gn')}), cell(f(r.tl_gn_nt), W[4], {fill: st('tl_gn_nt')}), cell(f(r.nd_pct_xong), W[5], {fill: st('nd_pct_xong')}),
-        cell(f(r.tl_thu), W[6]), cell(f(r.khcn_tl), W[7]), cell(r.dv_ket_nap_lk == null ? '' : qxNum(r.dv_ket_nap_lk), W[8]), cell(r.can_kiem_tra || 0, W[9])].join('')); });
-    tbl += '</w:tbl>';
-    const c = (k, s) => R.filter((r) => qxSt(k, r[k]) === s).length;
-    const body = para('BẢNG SỐ LIỆU CÁC XÃ, PHƯỜNG, ĐẶC KHU - ' + tuan.toUpperCase(), {b: true, sz: 28, jc: 'center', sau: 40})
-      + para(b ? 'Địa bàn đồng chí ' + b.ten + ' (' + b.chuc_vu + ') phụ trách: ' + R.length + ' đơn vị' : 'Toàn tỉnh: ' + R.length + ' đơn vị', {b: true, jc: 'center', sau: 40})
-      + para(ky, {i: true, jc: 'center', sau: 160, sz: 22})
-      + para('Tóm tắt: giải ngân vốn năm nay có ' + c('tl_gn', 'crit') + ' đơn vị ở mức báo động, ' + c('tl_gn', 'warn') + ' đơn vị ở mức cảnh báo (' + qxNguong('tl_gn') + '); nhà, đất dôi dư có ' + c('nd_pct_xong', 'crit') + ' đơn vị ở mức báo động; ' + R.filter((r) => r.nop !== 'Đúng hạn').length + ' đơn vị nộp báo cáo không đúng hạn hoặc chưa nộp.', {sau: 120})
-      + tbl
-      + para('Ghi chú: ô tô đỏ là mức báo động, tô vàng là mức cảnh báo theo mốc tiến độ. Số liệu do đảng ủy các xã, phường, đặc khu tự báo cáo qua biểu mẫu điện tử, Văn phòng Tỉnh ủy mới kiểm tra bước đầu; bản thử nghiệm, chỉ dùng tham khảo. Nguồn: Quang Tri Weekly Index.', {i: true, sz: 22, tr: 120});
-    const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + body
-      + '<w:sectPr><w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/><w:pgMar w:top="1134" w:right="851" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>';
-    return qxZip([['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
-      ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
-      ['word/document.xml', doc]]);
+  window.qxDocxBang = () => { const X = qxDx, f = (v) => v == null ? '' : qxF1(v), sF = {crit: 'F4CCCC', warn: 'FFF2CC'};
+    const R = qxBangRows(), b = qxBtv(), tuan = (document.querySelector('.tuan-the.hien b') || {}).textContent || '', ky = (document.querySelector('.tuan-the.hien small') || {}).textContent || '', c = (k, s) => R.filter((r) => qxSt(k, r[k]) === s).length;
+    const rows = R.map((r, i) => { const st = (k) => ({t: f(r[k]), fill: sF[qxSt(k, r[k])]}); return [i + 1, {t: r.xa, jc: 'left'}, r.nop === 'Trễ hạn' ? 'Trễ ' + qxF1(r.tre_gio) + ' giờ' : r.nop || '', st('tl_gn'), st('tl_gn_nt'), st('nd_pct_xong'), f(r.tl_thu), f(r.khcn_tl), r.dv_ket_nap_lk == null ? '' : qxNum(r.dv_ket_nap_lk), r.can_kiem_tra || 0]; });
+    return X.pack(X.para('BẢNG SỐ LIỆU CÁC XÃ, PHƯỜNG, ĐẶC KHU - ' + tuan.toUpperCase(), {b: true, sz: 28, jc: 'center', sau: 40})
+      + X.para(b ? 'Địa bàn đồng chí ' + b.ten + ' (' + b.chuc_vu + ') phụ trách: ' + R.length + ' đơn vị' : 'Toàn tỉnh: ' + R.length + ' đơn vị', {b: true, jc: 'center', sau: 40}) + X.para(ky, {i: true, jc: 'center', sau: 160, sz: 22})
+      + X.para('Tóm tắt: giải ngân vốn năm nay có ' + c('tl_gn', 'crit') + ' đơn vị ở mức báo động, ' + c('tl_gn', 'warn') + ' đơn vị ở mức cảnh báo (' + qxNguong('tl_gn') + '); nhà, đất dôi dư có ' + c('nd_pct_xong', 'crit') + ' đơn vị ở mức báo động; ' + R.filter((r) => r.nop !== 'Đúng hạn').length + ' đơn vị nộp báo cáo không đúng hạn hoặc chưa nộp.', {sau: 120, sz: 24})
+      + X.table([500, 2300, 1300, 1150, 1150, 1150, 1150, 1150, 1000, 900], ['TT', 'Đơn vị', 'Nộp báo cáo', 'Giải ngân vốn năm nay (%)', 'Vốn năm trước (%)', 'Nhà, đất xử lý xong (%)', 'Thu NS so dự toán (%)', 'Giải ngân vốn KHCN (%)', 'Kết nạp đảng viên', 'Số liệu cần kiểm tra'], rows)
+      + X.para('Ghi chú: ô tô đỏ là mức báo động, tô vàng là mức cảnh báo theo mốc tiến độ. Số liệu do đảng ủy các xã, phường, đặc khu tự báo cáo qua biểu mẫu điện tử, Văn phòng Tỉnh ủy mới kiểm tra bước đầu; bản thử nghiệm, chỉ dùng tham khảo. Nguồn: Quang Tri Weekly Index.', {i: true, sz: 22, tr: 120}), true);
   };
-  document.querySelectorAll('.qx-docx').forEach((btn) => btn.addEventListener('click', async () => {
-    const blob = qxDocxBang(), b = qxBtv(), tuan = ((document.querySelector('.tuan-the.hien b') || {}).textContent || '').replace(/\s+/g, ' ').trim();
-    const name = ('Bang so lieu cac xa - ' + tuan + (b ? ' - dia ban dc ' + b.ten : ' - toan tinh')).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D') + '.docx';
-    let dl = null; try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { dl = null; }
-    if (dl) { try { await dl.save({filename: name, data: blob}); } catch (e) { if (e && e.code !== 'declined') { btn.textContent = 'Không xuất được ở khung này, hãy mở trang trên trình duyệt'; setTimeout(() => { btn.textContent = 'Xuất file Word (.docx)'; }, 5000); } } return; }
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  }));
+  document.querySelectorAll('.qx-docx').forEach((btn) => btn.addEventListener('click', () => { const b = qxBtv(), tuan = ((document.querySelector('.tuan-the.hien b') || {}).textContent || '').replace(/\s+/g, ' ').trim();
+    qxDx.save(qxDocxBang(), 'Bang so lieu cac xa - ' + tuan + (b ? ' - dia ban dc ' + b.ten : ' - toan tinh') + '.docx', btn); }));
   document.querySelectorAll('.qx-ve-tq').forEach((btn) => btn.addEventListener('click', () => qxGo('tq', {pham_vi: 'xa'})));
   dash.draw('xa-body', (tb) => {
     tb.replaceChildren(); if (dash.data('xa').status !== 'ok') return;
@@ -1740,47 +1714,6 @@ body { margin: 0; background: #F5F3F1; }
     return {rows, tong: {ten: 'Toàn bộ 151 dự án', goc: sum('goc'), nay: sum('nay'), nguon: rows.some((r) => r.b) ? 'Tổng các cơ quan' : 'Theo danh mục'}};
   };
 
-  dash.draw('dat-ss-chart', (el) => {
-    el.replaceChildren(); if (!qxDat().length) return; const S = qxDatSs(), tip = qxTip(el);
-    const P = [['good', 'Đã chấm dứt, hoàn thành', (x) => x.cham_dut + x.hoan_thanh], ['neutral', 'Đã gia hạn', (x) => x.gia_han],
-      ['warn', 'Có phương án, đang xử lý', (x) => Math.max(0, x.co_pa - x.cham_dut - x.hoan_thanh - x.gia_han)], ['crit', 'Chưa có phương án', (x) => Math.max(0, x.tong - x.co_pa)]];
-    const nhom = [...S.rows, S.tong].map((r) => ({ten: r.ten, bars: [['Kỳ gốc', r.goc], ['Hiện nay', r.nay]]}));
-    const W = el.clientWidth || 900, lw = Math.min(170, W * 0.26), bh = 16, gap = 6, gg = 18, top = 26;
-    const H = top + nhom.length * (2 * bh + gap + gg);
-    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'So sánh tình trạng 151 dự án giữa kỳ gốc và hiện nay theo cơ quan');
-    const x = d3.scaleLinear().domain([0, 100]).range([lw + 64, W - 40]);
-    [0, 25, 50, 75, 100].forEach((t) => { svg.append('line').attr('x1', x(t)).attr('x2', x(t)).attr('y1', top - 6).attr('y2', H - 4).attr('stroke', qxVar('--line'));
-      svg.append('text').attr('x', x(t)).attr('y', 12).attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', qxVar('--ink-2')).text(t + '%'); });
-    nhom.forEach((g, gi) => { const y0 = top + gi * (2 * bh + gap + gg);
-      svg.append('text').attr('x', 0).attr('y', y0 + bh + gap / 2 + 4).attr('font-size', 12.5).attr('font-weight', gi === nhom.length - 1 ? 700 : 600).attr('fill', qxVar('--ink')).text(g.ten);
-      g.bars.forEach(([nh, v], bi) => { const y = y0 + bi * (bh + gap); let acc = 0;
-        svg.append('text').attr('x', lw + 58).attr('y', y + bh - 4).attr('text-anchor', 'end').attr('font-size', 11).attr('fill', qxVar('--ink-2')).text(nh);
-        P.forEach(([st, ten, f]) => { const n = f(v), pc = v.tong ? n / v.tong * 100 : 0; if (!n) return;
-          svg.append('rect').attr('x', x(acc)).attr('y', y).attr('width', Math.max(0, x(acc + pc) - x(acc) - 1)).attr('height', bh).attr('rx', 3).attr('fill', qxStColor(st)).attr('opacity', bi ? 1 : 0.55)
-            .on('mousemove', (e) => { const [mx, my] = d3.pointer(e, el); qxTipText(tip, g.ten + ' · ' + nh, [ten + ': ' + n + '/' + v.tong + ' dự án (' + qxF1(pc) + '%)']); qxPlace(el, tip, mx, my); })
-            .on('mouseleave', () => { tip.hidden = true; });
-          if (pc >= 7) svg.append('text').attr('x', x(acc + pc / 2)).attr('y', y + bh - 4).attr('text-anchor', 'middle').attr('font-size', 10.5).attr('font-weight', 600).attr('fill', '#fff').attr('pointer-events', 'none').text(n);
-          acc += pc; });
-        const xl = v.cham_dut + v.hoan_thanh; svg.append('text').attr('x', W - 36).attr('y', y + bh - 4).attr('font-size', 11).attr('fill', qxVar('--ink-2')).text(qxF1(v.tong ? xl / v.tong * 100 : 0) + '%'); }); });
-    const lg = document.createElement('div'); lg.className = 'chugiai';
-    P.forEach(([st, ten]) => { const sp = document.createElement('span'); const i = document.createElement('i'); i.className = 'cham ' + st; sp.append(i, document.createTextNode(ten)); lg.appendChild(sp); });
-    const n = document.createElement('span'); n.textContent = 'Thanh nhạt: kỳ gốc; thanh đậm: hiện nay; số bên phải: tỷ lệ xử lý dứt điểm'; n.className = 'chuthich'; lg.appendChild(n); el.appendChild(lg);
-  });
-  dash.draw('dat-ss', (tbl) => {
-    tbl.replaceChildren(); if (!qxDat().length) return; const S = qxDatSs();
-    const th = document.createElement('thead'); th.innerHTML = '<tr><th style="text-align:left">Cơ quan theo dõi</th><th>Số dự án</th><th>Đã chấm dứt, thu hồi</th><th>Đã hoàn thành</th><th>Đã gia hạn</th><th>Xử lý dứt điểm</th><th class="an-hep">Có phương án</th><th style="text-align:left" class="an-hep">Nguồn số hiện nay</th></tr>';
-    const o = (a, b, pct, tong0, tong1) => { const sp = document.createElement('span'); const d = b - a;
-      sp.append(document.createTextNode(pct ? qxPct(Math.round(a / tong0 * 1000) / 10) + ' → ' + qxPct(Math.round(b / tong1 * 1000) / 10) : a + ' → ' + b));
-      const k = document.createElement('b'); k.style.marginLeft = '6px'; k.className = d > 0 ? 'so good' : 'chuthich'; k.style.fontSize = '12px'; k.textContent = d > 0 ? '+' + d : d < 0 ? String(d) : '(0)'; if (!pct) sp.appendChild(k); return sp; };
-    const tb = document.createElement('tbody');
-    [...S.rows, S.tong].forEach((r, i) => { const tr = document.createElement('tr'); if (i === S.rows.length) tr.style.fontWeight = '700';
-      const td = (x, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; if (x instanceof Node) c.appendChild(x); else c.textContent = x; tr.appendChild(c); };
-      td(r.ten, 'trai'); td(r.nay.tong === r.goc.tong ? String(r.goc.tong) : r.goc.tong + ' → ' + r.nay.tong);
-      td(o(r.goc.cham_dut, r.nay.cham_dut)); td(o(r.goc.hoan_thanh, r.nay.hoan_thanh)); td(o(r.goc.gia_han, r.nay.gia_han));
-      td(o(r.goc.cham_dut + r.goc.hoan_thanh, r.nay.cham_dut + r.nay.hoan_thanh, true, r.goc.tong, r.nay.tong));
-      td(o(r.goc.co_pa, r.nay.co_pa), 'an-hep'); td(r.nguon, 'trai an-hep'); tb.appendChild(tr); });
-    tbl.append(th, tb);
-  });
   dash.draw('dat-ss-gc', (el) => { if (!qxDat().length) { el.textContent = '—'; return; } const S = qxDatSs(), g = S.tong.goc, n = S.tong.nay, B = qxDatBc();
     const d = (n.cham_dut + n.hoan_thanh) - (g.cham_dut + g.hoan_thanh), doi = qxDat().filter(qxDatDoi).length;
     el.textContent = 'Kỳ gốc: đã xử lý dứt điểm ' + (g.cham_dut + g.hoan_thanh) + '/' + g.tong + ' dự án, gia hạn ' + g.gia_han + '. Hiện nay: ' + (n.cham_dut + n.hoan_thanh) + ' dự án (' + (d > 0 ? 'tăng ' + d : 'chưa tăng') + ' so với kỳ gốc). '
