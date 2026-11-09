@@ -623,6 +623,7 @@ body { margin: 0; background: #F5F3F1; }
       <div class="c12 panel" id="dat-so-sanh">
         <header><h2>So sánh với kỳ gốc</h2><span class="chuthich">Kỳ gốc: phụ lục 151 dự án Sở Tài chính cập nhật 09/2026, báo cáo tại cuộc làm việc của đồng chí Phó Bí thư Thường trực Tỉnh ủy (kết luận tại Thông báo 119-TB/VPTU ngày 13/10/2026). "Hiện nay" lấy theo báo cáo tuần gần nhất của cơ quan theo dõi; cơ quan chưa báo cáo thì lấy theo danh mục.</span></header>
         <div class="than">
+          <div class="chart" data-draw="dat-ss-chart" data-source="dat dbc" style="min-height:0;margin-bottom:6px"></div>
           <div class="cuon"><table class="tk" data-draw="dat-ss" data-source="dat dbc"></table></div>
           <p class="chuthich" data-draw="dat-ss-gc" data-source="dat dbc" style="margin-top:8px">—</p>
         </div>
@@ -1676,6 +1677,33 @@ body { margin: 0; background: #F5F3F1; }
     const sum = (k) => { const o = {}; ['tong', 'cham_dut', 'hoan_thanh', 'gia_han', 'co_pa'].forEach((f) => { o[f] = rows.reduce((a, r) => a + (r[k][f] || 0), 0); }); return o; };
     return {rows, tong: {ten: 'Toàn bộ 151 dự án', goc: sum('goc'), nay: sum('nay'), nguon: rows.some((r) => r.b) ? 'Tổng các cơ quan' : 'Theo danh mục'}};
   };
+
+  dash.draw('dat-ss-chart', (el) => {
+    el.replaceChildren(); if (!qxDat().length) return; const S = qxDatSs(), tip = qxTip(el);
+    const P = [['good', 'Đã chấm dứt, hoàn thành', (x) => x.cham_dut + x.hoan_thanh], ['neutral', 'Đã gia hạn', (x) => x.gia_han],
+      ['warn', 'Có phương án, đang xử lý', (x) => Math.max(0, x.co_pa - x.cham_dut - x.hoan_thanh - x.gia_han)], ['crit', 'Chưa có phương án', (x) => Math.max(0, x.tong - x.co_pa)]];
+    const nhom = [...S.rows, S.tong].map((r) => ({ten: r.ten, bars: [['Kỳ gốc', r.goc], ['Hiện nay', r.nay]]}));
+    const W = el.clientWidth || 900, lw = Math.min(170, W * 0.26), bh = 16, gap = 6, gg = 18, top = 26;
+    const H = top + nhom.length * (2 * bh + gap + gg);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'So sánh tình trạng 151 dự án giữa kỳ gốc và hiện nay theo cơ quan');
+    const x = d3.scaleLinear().domain([0, 100]).range([lw + 64, W - 40]);
+    [0, 25, 50, 75, 100].forEach((t) => { svg.append('line').attr('x1', x(t)).attr('x2', x(t)).attr('y1', top - 6).attr('y2', H - 4).attr('stroke', qxVar('--line'));
+      svg.append('text').attr('x', x(t)).attr('y', 12).attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', qxVar('--ink-2')).text(t + '%'); });
+    nhom.forEach((g, gi) => { const y0 = top + gi * (2 * bh + gap + gg);
+      svg.append('text').attr('x', 0).attr('y', y0 + bh + gap / 2 + 4).attr('font-size', 12.5).attr('font-weight', gi === nhom.length - 1 ? 700 : 600).attr('fill', qxVar('--ink')).text(g.ten);
+      g.bars.forEach(([nh, v], bi) => { const y = y0 + bi * (bh + gap); let acc = 0;
+        svg.append('text').attr('x', lw + 58).attr('y', y + bh - 4).attr('text-anchor', 'end').attr('font-size', 11).attr('fill', qxVar('--ink-2')).text(nh);
+        P.forEach(([st, ten, f]) => { const n = f(v), pc = v.tong ? n / v.tong * 100 : 0; if (!n) return;
+          svg.append('rect').attr('x', x(acc)).attr('y', y).attr('width', Math.max(0, x(acc + pc) - x(acc) - 1)).attr('height', bh).attr('rx', 3).attr('fill', qxStColor(st)).attr('opacity', bi ? 1 : 0.55)
+            .on('mousemove', (e) => { const [mx, my] = d3.pointer(e, el); qxTipText(tip, g.ten + ' · ' + nh, [ten + ': ' + n + '/' + v.tong + ' dự án (' + qxF1(pc) + '%)']); qxPlace(el, tip, mx, my); })
+            .on('mouseleave', () => { tip.hidden = true; });
+          if (pc >= 7) svg.append('text').attr('x', x(acc + pc / 2)).attr('y', y + bh - 4).attr('text-anchor', 'middle').attr('font-size', 10.5).attr('font-weight', 600).attr('fill', '#fff').attr('pointer-events', 'none').text(n);
+          acc += pc; });
+        const xl = v.cham_dut + v.hoan_thanh; svg.append('text').attr('x', W - 36).attr('y', y + bh - 4).attr('font-size', 11).attr('fill', qxVar('--ink-2')).text(qxF1(v.tong ? xl / v.tong * 100 : 0) + '%'); }); });
+    const lg = document.createElement('div'); lg.className = 'chugiai';
+    P.forEach(([st, ten]) => { const sp = document.createElement('span'); const i = document.createElement('i'); i.className = 'cham ' + st; sp.append(i, document.createTextNode(ten)); lg.appendChild(sp); });
+    const n = document.createElement('span'); n.textContent = 'Thanh nhạt: kỳ gốc; thanh đậm: hiện nay; số bên phải: tỷ lệ xử lý dứt điểm'; n.className = 'chuthich'; lg.appendChild(n); el.appendChild(lg);
+  });
   dash.draw('dat-ss', (tbl) => {
     tbl.replaceChildren(); if (!qxDat().length) return; const S = qxDatSs();
     const th = document.createElement('thead'); th.innerHTML = '<tr><th style="text-align:left">Cơ quan theo dõi</th><th>Số dự án</th><th>Đã chấm dứt, thu hồi</th><th>Đã hoàn thành</th><th>Đã gia hạn</th><th>Xử lý dứt điểm</th><th class="an-hep">Có phương án</th><th style="text-align:left" class="an-hep">Nguồn số hiện nay</th></tr>';
