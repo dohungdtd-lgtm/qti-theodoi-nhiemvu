@@ -2239,39 +2239,73 @@ body { margin: 0; background: #F5F3F1; }
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); };
     return {run, para, table, pack, save};
   })();
-  window.qxDocxNvg = () => {
-    const X = qxDx, p = dash.params(), ng = p.nvg_ng || '', A = qxNvg(), L = qxNvgNg(), h = qxHomNay(), hn = qxDMY(h);
-    const c = (R, t) => R.filter((r) => r.tinh_trang === t).length, pct = (a, b) => b ? qxF1(a / b * 100) + '%' : '';
-    const NG = ['Ban Chấp hành Đảng bộ tỉnh', 'Ban Thường vụ Tỉnh ủy', 'Thường trực Tỉnh ủy', 'Bí thư Tỉnh ủy', 'Phó Bí thư Tỉnh ủy'];
-    const ht = c(L, 'Đã hoàn thành'), qh = c(L, 'Quá hạn'), dh = c(L, 'Đến hạn trong 7 ngày'), th = c(L, 'Trong hạn'), kh = L.filter((r) => !r.han_ngay && r.tinh_trang !== 'Đã hoàn thành').length;
-    let b = X.para('BÁO CÁO TÌNH HÌNH THỰC HIỆN NHIỆM VỤ', {b: true, sz: 28, jc: 'center', sau: 40})
-      + X.para(ng ? 'Nhiệm vụ do ' + ng + ' giao' : 'Nhiệm vụ do cấp ủy, lãnh đạo Tỉnh ủy giao', {b: true, jc: 'center', sau: 40})
-      + X.para('Tính đến ngày ' + hn + '. ' + ((document.querySelector('[data-draw="nvg-phu"]') || {}).textContent || ''), {i: true, jc: 'center', sz: 24, sau: 200})
-      + X.para('I. TỔNG HỢP CHUNG', {b: true, sau: 80})
-      + X.para('Tổng số ' + L.length + ' nhiệm vụ; đã hoàn thành ' + ht + ' nhiệm vụ (' + pct(ht, L.length) + '); trong hạn ' + th + ' nhiệm vụ; đến hạn trong 7 ngày tới ' + dh + ' nhiệm vụ; quá hạn ' + qh + ' nhiệm vụ (' + pct(qh, L.length) + '); ' + kh + ' nhiệm vụ chưa có thời hạn cụ thể. Cần đôn đốc ' + (qh + dh) + ' nhiệm vụ.', {ind: true, sau: 120});
-    const rowsNg = (ng ? [ng] : NG).map((n) => { const R = A.filter((r) => r.nguon === n); return [{t: n, jc: 'left'}, R.length, c(R, 'Đã hoàn thành'), c(R, 'Trong hạn'), c(R, 'Đến hạn trong 7 ngày'), {t: c(R, 'Quá hạn'), fill: c(R, 'Quá hạn') ? 'F4CCCC' : ''}, pct(c(R, 'Đã hoàn thành'), R.length)]; });
-    if (!ng) rowsNg.push([{t: 'Tổng cộng', b: true, jc: 'left'}, {t: L.length, b: true}, {t: ht, b: true}, {t: th, b: true}, {t: dh, b: true}, {t: qh, b: true}, {t: pct(ht, L.length), b: true}]);
-    b += X.table([2600, 1000, 1150, 1050, 1150, 1000, 1100], ['Nguồn giao', 'Tổng số', 'Đã hoàn thành', 'Trong hạn', 'Đến hạn 7 ngày', 'Quá hạn', 'Tỷ lệ hoàn thành'], rowsNg);
-    const W = [450, 3300, 1350, 1500, 1000, 1100, 4150], H = ['TT', 'Nhiệm vụ', 'Văn bản giao', 'Chủ trì, đầu mối', 'Thời hạn', 'Tình trạng', 'Kết quả, tình hình'];
-    const dong = (R) => R.map((r, i) => [i + 1, {t: r.ma + '. ' + r.ten, jc: 'left'}, r.van_ban, {t: [r.chu_tri, r.dau_moi && r.dau_moi !== r.chu_tri ? 'Đầu mối: ' + r.dau_moi : ''].filter(Boolean).join('\n'), jc: 'left'}, r.han || (r.han_ngay ? qxDMY(r.han_ngay) : 'Chưa có'),
-      {t: r.tinh_trang_ct, fill: {crit: 'F4CCCC', warn: 'FFF2CC'}[qxNvgSt(r)]}, {t: ((k) => k.length > 320 ? k.slice(0, 320).replace(/\s+\S*$/, '') + '…' : k)(r.ket_qua || (r.lich_su.length ? r.lich_su[r.lich_su.length - 1].nd : '') || 'Chưa có báo cáo kết quả'), jc: 'left'}]);
-    const QH = L.filter((r) => r.tinh_trang === 'Quá hạn').sort((a, b) => (b.qua_han_ngay || 0) - (a.qua_han_ngay || 0));
-    const DH = L.filter((r) => r.tinh_trang === 'Đến hạn trong 7 ngày').sort((a, b) => String(a.han_ngay).localeCompare(String(b.han_ngay)));
-    b += X.para('II. NHIỆM VỤ QUÁ HẠN (' + QH.length + ' nhiệm vụ)', {b: true, tr: 200, sau: 80}) + (QH.length ? X.table(W, H, dong(QH), {sz: 20}) : X.para('Không có nhiệm vụ quá hạn.', {ind: true}));
-    b += X.para('III. NHIỆM VỤ ĐẾN HẠN TRONG 7 NGÀY TỚI (' + DH.length + ' nhiệm vụ)', {b: true, tr: 200, sau: 80}) + (DH.length ? X.table(W, H, dong(DH), {sz: 20}) : X.para('Không có nhiệm vụ đến hạn trong 7 ngày tới.', {ind: true}));
-    const loc = ['nvg_tt', 'nvg_vb', 'nvg_dv', 'nvg_lv', 'nvg_dm', 'nvg_q', 'nvg_tu', 'nvg_den', 'xa'].some((k) => p[k]);
-    if (loc) { const S = qxNvgShown(); b += X.para('IV. DANH SÁCH NHIỆM VỤ THEO BỘ LỌC ĐANG CHỌN (' + S.length + ' nhiệm vụ)', {b: true, tr: 200, sau: 80}) + X.table(W, H, dong(S), {sz: 20}); }
-    b += X.para('Ghi chú: số liệu theo hệ thống theo dõi nhiệm vụ của Văn phòng Tỉnh ủy; tình trạng quá hạn, đến hạn tính theo ngày xuất báo cáo. Nguồn: Quang Tri Weekly Index (bản thử nghiệm).', {i: true, sz: 22, tr: 160});
-    return X.pack(b, true);
+  window.qxDocxNvg = () => {   // theo mẫu "bao-cao-nhiem-vu" của Văn phòng Tỉnh ủy
+    const esc = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const F = '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman" w:eastAsia="Times New Roman"/>';
+    const run = (t, o = {}) => String(t ?? '').split('\n').map((ln, i) => (i ? '<w:r><w:br/></w:r>' : '') + '<w:r><w:rPr>' + F + (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + (o.u ? '<w:u w:val="single"/>' : '') + '<w:sz w:val="' + (o.sz || 26) + '"/><w:szCs w:val="' + (o.sz || 26) + '"/></w:rPr><w:t xml:space="preserve">' + esc(ln) + '</w:t></w:r>').join('');
+    const P = (t, o = {}) => '<w:p><w:pPr>' + (o.keep ? '<w:keepNext/>' : '') + '<w:spacing w:before="' + (o.tr || 0) + '" w:after="' + (o.sau ?? 0) + '" w:line="' + (o.line || 276) + '" w:lineRule="auto"/>' + (o.ind ? '<w:ind w:firstLine="567"/>' : '') + '<w:jc w:val="' + (o.jc || 'left') + '"/></w:pPr>' + run(t, o) + '</w:p>';
+    const NB = (k) => '<w:' + k + ' w:val="none" w:sz="0" w:space="0" w:color="FFFFFF"/>', BD = (k) => '<w:' + k + ' w:val="single" w:sz="4" w:space="0" w:color="auto"/>';
+    const tbl = (W, inner, vien) => '<w:tbl><w:tblPr><w:tblW w:w="14854" w:type="dxa"/><w:tblBorders>' + ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(vien ? BD : NB).join('') + '</w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid>' + W.map((w) => '<w:gridCol w:w="' + w + '"/>').join('') + '</w:tblGrid>' + inner + '</w:tbl>';
+    const tc = (w, paras, fill) => '<w:tc><w:tcPr><w:tcW w:w="' + w + '" w:type="dxa"/>' + (fill ? '<w:shd w:val="clear" w:color="auto" w:fill="' + fill + '"/>' : '') + '<w:tcMar><w:top w:w="30" w:type="dxa"/><w:left w:w="60" w:type="dxa"/><w:bottom w:w="30" w:type="dxa"/><w:right w:w="60" w:type="dxa"/></w:tcMar><w:vAlign w:val="center"/></w:tcPr>' + paras + '</w:tc>';
+    const cp = (t, jc, b) => String(t ?? '').split('\n').map((ln) => P(ln, {sz: 21, line: 240, jc: jc || 'left', b})).join('');
+    const tr = (cells, hdr) => '<w:tr><w:trPr>' + (hdr ? '<w:tblHeader/>' : '') + '<w:cantSplit/></w:trPr>' + cells + '</w:tr>';
+    const p = dash.params(), ng = p.nvg_ng || '', R = qxNvgShown(), hn = qxHomNay(), [Y, M, D] = [hn.slice(0, 4), hn.slice(5, 7), hn.slice(8, 10)];
+    const c = (t) => R.filter((r) => r.tinh_trang === t).length, pct = (a, b) => b ? qxF1(a / b * 100) + '%' : '0%';
+    const NGT = {'Bí thư Tỉnh ủy': 'đồng chí Bí thư Tỉnh ủy', 'Phó Bí thư Tỉnh ủy': 'các đồng chí Phó Bí thư Tỉnh ủy', 'Thường trực Tỉnh ủy': 'Thường trực Tỉnh ủy', 'Ban Thường vụ Tỉnh ủy': 'Ban Thường vụ Tỉnh ủy', 'Ban Chấp hành Đảng bộ tỉnh': 'Ban Chấp hành Đảng bộ tỉnh'};
+    const NG = Object.keys(NGT).filter((n) => R.some((r) => r.nguon === n));
+    let b = tbl([5200, 9654], tr(tc(5200, P('TỈNH ỦY QUẢNG TRỊ', {jc: 'center'}) + P('VĂN PHÒNG', {jc: 'center', b: true}) + P('*', {jc: 'center'}))
+      + tc(9654, P('ĐẢNG CỘNG SẢN VIỆT NAM', {jc: 'right', b: true, u: true, sau: 60}) + P('Quảng Trị, ngày ' + D + ' tháng ' + M + ' năm ' + Y, {jc: 'right', i: true}))), false);
+    const tieu = 'tình hình thực hiện nhiệm vụ do ' + (NG.length ? NG.map((n) => NGT[n]).join(', ') : 'cấp ủy, lãnh đạo Tỉnh ủy') + ' giao';
+    const loc = []; if (p.nvg_q) loc.push('từ khóa: “' + p.nvg_q + '”'); if (p.nvg_dv) loc.push('đơn vị chủ trì: ' + p.nvg_dv); if (p.nvg_vb) loc.push('văn bản: ' + p.nvg_vb); if (p.nvg_lv) loc.push('lĩnh vực: ' + p.nvg_lv); if (p.nvg_dm) loc.push('đầu mối: ' + p.nvg_dm); if (p.xa) loc.push('địa bàn: ' + p.xa); if (p.nvg_tt) loc.push('tình trạng: ' + (p.nvg_tt === 'khonghan' ? 'chưa có hạn cụ thể' : p.nvg_tt));
+    loc.push('số liệu tính đến ngày ' + D + '/' + M + '/' + Y);
+    b += P('BÁO CÁO', {jc: 'center', b: true, sz: 30, tr: 360}) + P(tieu, {jc: 'center', b: true, sz: 28}) + P('(' + loc.join('; ') + ')', {jc: 'center', i: true}) + P('-----', {jc: 'center', sau: 120});
+    b += P('I. TỔNG HỢP', {b: true, tr: 120, sau: 60, keep: true});
+    const ht = c('Đã hoàn thành'), th = c('Trong hạn'), dh = c('Đến hạn trong 7 ngày'), qh = c('Quá hạn');
+    b += P('Tổng số ' + R.length + ' nhiệm vụ, trong đó: đã hoàn thành ' + ht + ' nhiệm vụ (' + pct(ht, R.length) + '); đang thực hiện, còn trong hạn ' + th + ' nhiệm vụ; đến hạn trong 7 ngày tới ' + dh + ' nhiệm vụ; quá hạn chưa có kết quả hoàn thành ' + qh + ' nhiệm vụ.', {jc: 'both', ind: true, sau: 120});
+    const W1 = [5654, 1800, 1800, 1800, 2000, 1800], H1 = ['Nguồn giao', 'Tổng số', 'Đã hoàn thành', 'Trong hạn', 'Đến hạn trong 7 ngày', 'Quá hạn'];
+    let t1 = tr(H1.map((h, i) => tc(W1[i], cp(h, 'center', true), 'EDEDED')).join(''), true);
+    Object.keys(NGT).forEach((n) => { const X = R.filter((r) => r.nguon === n); if (!X.length && ng) return; const k = (t) => X.filter((r) => r.tinh_trang === t).length;
+      t1 += tr([n, X.length, k('Đã hoàn thành'), k('Trong hạn'), k('Đến hạn trong 7 ngày'), k('Quá hạn')].map((v, i) => tc(W1[i], cp(v, i ? 'center' : 'left'))).join('')); });
+    t1 += tr(['Cộng', R.length, ht, th, dh, qh].map((v, i) => tc(W1[i], cp(v, i ? 'center' : 'left', true))).join(''));
+    b += tbl(W1, t1, true);
+    b += P('II. DANH SÁCH NHIỆM VỤ', {b: true, tr: 240, sau: 60, keep: true});
+    b += P('Ghi chú: dòng tô đỏ là nhiệm vụ quá hạn; dòng tô vàng là nhiệm vụ đến hạn trong 7 ngày tới; dòng tô xanh nhạt là nhiệm vụ đã hoàn thành. Cột tình hình thực hiện ghi các lần cập nhật theo trình tự thời gian, [ngày] là ngày cập nhật vào hệ thống, trong ngoặc là văn bản làm căn cứ.', {i: true, sz: 22, jc: 'both', sau: 60});
+    const W2 = [420, 1150, 3400, 1250, 1350, 1350, 1150, 1000, 3784], H2 = ['TT', 'Mã', 'Nhiệm vụ', 'Văn bản giao', 'Đơn vị chủ trì', 'UBND tỉnh phân công', 'Hạn hoàn thành', 'Tình trạng', 'Tình hình thực hiện (theo trình tự cập nhật)'];
+    const ngay = (iso) => iso ? qxDMY(String(iso).slice(0, 10)) : '';
+    const tinhHinh = (r) => { const L = (r.lich_su || []).filter((x) => x.nd && !/chuyên viên/i.test(x.nd)); if (!L.length) return r.ket_qua || 'Chưa có báo cáo kết quả.';
+      const f = (x) => '[' + ngay(x.luc) + '] ' + x.nd + (x.vb ? ' (' + x.vb + ')' : ''); return L.length === 1 ? f(L[0]) : L.map((x, i) => (i + 1) + '. ' + f(x)).join('\n'); };
+    let stt = 0;
+    const nhom = (so, ten, L, fill) => { if (!L.length) return; b += P(so + '. ' + ten + ' (' + L.length + ' nhiệm vụ)', {b: true, tr: 160, sau: 60, keep: true});
+      let x = tr(H2.map((h, i) => tc(W2[i], cp(h, 'center', true), 'EDEDED')).join(''), true);
+      L.forEach((r) => { stt++;
+        const ub = [r.chu_tri_ub && 'Chủ trì: ' + r.chu_tri_ub, r.dau_moi && 'Đầu mối: ' + r.dau_moi].filter(Boolean).join('\n');
+        const han = r.han_ngay ? ngay(r.han_ngay) + (r.dinh_ky ? '\n(' + r.dinh_ky + ')' : '') : 'Chưa ấn định';
+        const tt = r.tinh_trang === 'Quá hạn' ? 'Quá hạn ' + r.qua_han_ngay + ' ngày' : r.tinh_trang === 'Đến hạn trong 7 ngày' ? r.tinh_trang_ct : r.tinh_trang === 'Đã hoàn thành' ? 'Đã hoàn thành' : 'Đang thực hiện';
+        x += tr([[stt, 'center'], [r.ma, 'center'], [r.ten], [r.van_ban], [r.chu_tri + (r.phoi_hop ? '\nPhối hợp: ' + r.phoi_hop : '')], [ub], [han, 'center'], [tt, 'center'], [tinhHinh(r)]].map(([v, jc], i) => tc(W2[i], cp(v, jc), fill)).join('')); });
+      b += tbl(W2, x, true); };
+    const so = (a, z) => String(a.han_ngay || '9999').localeCompare(String(z.han_ngay || '9999')) || a.ma.localeCompare(z.ma);
+    nhom(1, 'Nhiệm vụ quá hạn, chưa có kết quả hoàn thành', R.filter((r) => r.tinh_trang === 'Quá hạn').sort((a, z) => (z.qua_han_ngay || 0) - (a.qua_han_ngay || 0)), 'FFC7CE');
+    nhom(2, 'Nhiệm vụ đến hạn trong 7 ngày tới', R.filter((r) => r.tinh_trang === 'Đến hạn trong 7 ngày').sort(so), 'FFEB9C');
+    nhom(3, 'Nhiệm vụ đang thực hiện, còn trong hạn hoặc chưa ấn định thời hạn', R.filter((r) => r.tinh_trang === 'Trong hạn').sort(so), '');
+    nhom(4, 'Nhiệm vụ đã hoàn thành', R.filter((r) => r.tinh_trang === 'Đã hoàn thành').sort(so), 'E2EFDA');
+    const ftr = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr>' + F + '<w:sz w:val="22"/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:rPr>' + F + '<w:sz w:val="22"/></w:rPr><w:instrText xml:space="preserve">PAGE</w:instrText></w:r><w:r><w:rPr>' + F + '<w:sz w:val="22"/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr>' + F + '<w:sz w:val="22"/></w:rPr><w:t>1</w:t></w:r><w:r><w:rPr>' + F + '<w:sz w:val="22"/></w:rPr><w:fldChar w:fldCharType="end"/></w:r></w:p></w:ftr>';
+    const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>' + b
+      + '<w:sectPr><w:footerReference w:type="default" r:id="rId1"/><w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/><w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="1134" w:header="708" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>';
+    return qxZip([['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/></Types>'],
+      ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
+      ['word/_rels/document.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/></Relationships>'],
+      ['word/document.xml', doc], ['word/footer1.xml', ftr]]);
   };
-  document.querySelectorAll('.qx-nvg-docx').forEach((btn) => btn.addEventListener('click', () => { const ng = dash.params().nvg_ng || ''; qxDx.save(qxDocxNvg(), 'Bao cao tinh hinh thuc hien nhiem vu - ' + (ng || 'tat ca nguon giao') + ' - ' + qxDMY(qxHomNay()).replace(/\//g, '.') + '.docx', btn); }));
+  document.querySelectorAll('.qx-nvg-docx').forEach((btn) => btn.addEventListener('click', () => { const ng = dash.params().nvg_ng || ''; qxDx.save(qxDocxNvg(), 'bao-cao-nhiem-vu_' + qxDMY(qxHomNay()).replace(/\//g, '.') + (ng ? '_' + ng : '') + '.docx', btn); }));
+  // so khớp không phân biệt cách bỏ dấu (uỷ/ủy, hoà/hòa) và hoa thường
+  window.qxBoDau = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/\s+/g, ' ').trim();
   window.qxNvgShown = () => {
-    const p = dash.params(); const q = (p.nvg_q || '').toLowerCase(); const dk = p.nvg_dk || '';
+    const p = dash.params(); const q = qxBoDau(p.nvg_q || ''); const dk = p.nvg_dk || '';
     const day = (r) => dk === 'giao' ? qxIsoNgay(r.giao_luc) : dk === 'cn' ? qxIsoNgay(r.cap_nhat) : r.han_ngay;
     let L = qxNvgNg().filter((r) => (!p.nvg_tt || (p.nvg_tt === 'khonghan' ? !r.han_ngay && r.tinh_trang !== 'Đã hoàn thành' : r.tinh_trang === p.nvg_tt)) && (!p.nvg_vb || r.van_ban === p.nvg_vb) && (!p.nvg_dv || r.chu_tri === p.nvg_dv)
       && (!p.nvg_lv || r.linh_vuc === p.nvg_lv) && (!p.nvg_dm || r.dau_moi === p.nvg_dm) && (!p.xa || qxHasXa(r.chu_tri + ' ' + r.phoi_hop + ' ' + r.ten, p.xa))
       && (!p.nvg_tu || ((day(r) || '') >= p.nvg_tu)) && (!p.nvg_den || (day(r) && day(r) <= p.nvg_den))
-      && (!q || (r.ma + ' ' + r.ten + ' ' + r.van_ban + ' ' + r.chu_tri + ' ' + r.phoi_hop + ' ' + r.dau_moi + ' ' + r.chu_tri_ub + ' ' + r.vb_phan_cong).toLowerCase().includes(q)));
+      && (!q || qxBoDau(r.ma + ' ' + r.ten + ' ' + r.van_ban + ' ' + r.chu_tri + ' ' + r.phoi_hop + ' ' + r.dau_moi + ' ' + r.chu_tri_ub + ' ' + r.vb_phan_cong).includes(q)));
     const ord = {crit: 0, warn: 1, neutral: 2, good: 3}; const sx = p.nvg_sx || '';
     return L.slice().sort((a, b) => sx === 'ma' ? a.ma.localeCompare(b.ma) : sx === 'cn' ? String(b.cap_nhat).localeCompare(String(a.cap_nhat)) : sx === 'quahan' ? (b.qua_han_ngay ?? -1) - (a.qua_han_ngay ?? -1) || ord[qxNvgSt(a)] - ord[qxNvgSt(b)]
       : ord[qxNvgSt(a)] - ord[qxNvgSt(b)] || String(a.han_ngay || '9').localeCompare(String(b.han_ngay || '9')));
