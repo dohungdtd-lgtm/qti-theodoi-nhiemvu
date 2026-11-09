@@ -728,6 +728,7 @@ body { margin: 0; background: #F5F3F1; }
         <div>
           <h2 class="tq-h">Tình hình thực hiện nhiệm vụ</h2>
           <p class="tq-phu" data-draw="nvg-phu" data-source="nvg vbg">—</p>
+          <button class="btn qx-nvg-docx" type="button" style="margin-top:8px" title="Xuất báo cáo theo nguồn giao và bộ lọc đang chọn">Xuất báo cáo Word (.docx)</button>
         </div>
         <div class="seg" role="group" aria-label="Nguồn giao" style="height:auto;flex-wrap:wrap">
           <button type="button" class="seg-b qx-nvgng" data-v="">Tất cả</button><button type="button" class="seg-b qx-nvgng" data-v="Bí thư Tỉnh ủy">Bí thư</button><button type="button" class="seg-b qx-nvgng" data-v="Phó Bí thư Tỉnh ủy">Phó Bí thư</button><button type="button" class="seg-b qx-nvgng" data-v="Thường trực Tỉnh ủy">Thường trực</button><button type="button" class="seg-b qx-nvgng" data-v="Ban Thường vụ Tỉnh ủy">Ban Thường vụ</button><button type="button" class="seg-b qx-nvgng" data-v="Ban Chấp hành Đảng bộ tỉnh">Ban Chấp hành</button>
@@ -2214,6 +2215,56 @@ body { margin: 0; background: #F5F3F1; }
   // danh sách
   dash.draw('nvg-opt', (sel) => { const f = sel.dataset.f; const v = dash.params()[sel.dataset.k] || ''; const L = d3.rollups(qxNvgNg(), (x) => x.length, (r) => r[f]).filter(([k]) => k).sort((a, b) => b[1] - a[1]);
     sel.replaceChildren(new Option('Tất cả', ''), ...L.map(([k, n]) => new Option((k.length > 60 ? k.slice(0, 60) + '…' : k) + ' (' + n + ')', k))); sel.value = v; });
+
+  // ---------- Dựng .docx dùng chung ----------
+  window.qxDx = (() => {
+    const esc = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const run = (t, o = {}) => String(t ?? '').split('\n').map((ln, i) => (i ? '<w:r><w:br/></w:r>' : '') + '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>' + (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + '<w:sz w:val="' + (o.sz || 26) + '"/></w:rPr><w:t xml:space="preserve">' + esc(ln) + '</w:t></w:r>').join('');
+    const para = (t, o = {}) => '<w:p><w:pPr><w:spacing w:before="' + (o.tr || 0) + '" w:after="' + (o.sau ?? 80) + '"/>' + (o.ind ? '<w:ind w:firstLine="567"/>' : '') + '<w:jc w:val="' + (o.jc || 'both') + '"/></w:pPr>' + run(t, o) + '</w:p>';
+    const table = (W, head, rows, o = {}) => { const tong = W.reduce((a, b) => a + b, 0), sz = o.sz || 22;
+      const cell = (t, w, c = {}) => '<w:tc><w:tcPr><w:tcW w:w="' + w + '" w:type="dxa"/>' + (c.fill ? '<w:shd w:val="clear" w:color="auto" w:fill="' + c.fill + '"/>' : '') + '<w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:before="20" w:after="20"/><w:jc w:val="' + (c.jc || 'center') + '"/></w:pPr>' + run(t, {b: c.b, sz}) + '</w:p></w:tc>';
+      let x = '<w:tbl><w:tblPr><w:tblW w:w="' + tong + '" w:type="dxa"/><w:jc w:val="center"/><w:tblLayout w:type="fixed"/><w:tblBorders>' + ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map((k) => '<w:' + k + ' w:val="single" w:sz="4" w:space="0" w:color="000000"/>').join('') + '</w:tblBorders></w:tblPr><w:tblGrid>' + W.map((w) => '<w:gridCol w:w="' + w + '"/>').join('') + '</w:tblGrid>';
+      x += '<w:tr><w:trPr><w:tblHeader/><w:cantSplit/></w:trPr>' + head.map((h, i) => cell(h, W[i], {b: true, fill: 'E7E6E6'})).join('') + '</w:tr>';
+      rows.forEach((r) => { x += '<w:tr><w:trPr><w:cantSplit/></w:trPr>' + r.map((c, i) => { const o2 = c && typeof c === 'object' ? c : {t: c}; return cell(o2.t, W[i], {jc: o2.jc || (o.trai || []).includes(i) && 'left' || 'center', fill: o2.fill, b: o2.b}); }).join('') + '</w:tr>'; });
+      return x + '</w:tbl>'; };
+    const pack = (body, ngang) => { const pg = ngang ? '<w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/><w:pgMar w:top="1134" w:right="851" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/>' : '<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="851" w:bottom="1134" w:left="1701" w:header="567" w:footer="567" w:gutter="0"/>';
+      const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + body + '<w:sectPr>' + pg + '</w:sectPr></w:body></w:document>';
+      return qxZip([['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
+        ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
+        ['word/document.xml', doc]]); };
+    const ascii = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    const save = async (blob, name, btn) => { name = ascii(name);
+      let dl = null; try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { dl = null; }
+      if (dl) { try { await dl.save({filename: name, data: blob}); } catch (e) { if (e && e.code !== 'declined' && btn) { const t0 = btn.textContent; btn.textContent = 'Không xuất được ở khung này, hãy mở trang trên trình duyệt'; setTimeout(() => { btn.textContent = t0; }, 5000); } } return; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); };
+    return {run, para, table, pack, save};
+  })();
+  window.qxDocxNvg = () => {
+    const X = qxDx, p = dash.params(), ng = p.nvg_ng || '', A = qxNvg(), L = qxNvgNg(), h = qxHomNay(), hn = qxDMY(h);
+    const c = (R, t) => R.filter((r) => r.tinh_trang === t).length, pct = (a, b) => b ? qxF1(a / b * 100) + '%' : '';
+    const NG = ['Ban Chấp hành Đảng bộ tỉnh', 'Ban Thường vụ Tỉnh ủy', 'Thường trực Tỉnh ủy', 'Bí thư Tỉnh ủy', 'Phó Bí thư Tỉnh ủy'];
+    const ht = c(L, 'Đã hoàn thành'), qh = c(L, 'Quá hạn'), dh = c(L, 'Đến hạn trong 7 ngày'), th = c(L, 'Trong hạn'), kh = L.filter((r) => !r.han_ngay && r.tinh_trang !== 'Đã hoàn thành').length;
+    let b = X.para('BÁO CÁO TÌNH HÌNH THỰC HIỆN NHIỆM VỤ', {b: true, sz: 28, jc: 'center', sau: 40})
+      + X.para(ng ? 'Nhiệm vụ do ' + ng + ' giao' : 'Nhiệm vụ do cấp ủy, lãnh đạo Tỉnh ủy giao', {b: true, jc: 'center', sau: 40})
+      + X.para('Tính đến ngày ' + hn + '. ' + ((document.querySelector('[data-draw="nvg-phu"]') || {}).textContent || ''), {i: true, jc: 'center', sz: 24, sau: 200})
+      + X.para('I. TỔNG HỢP CHUNG', {b: true, sau: 80})
+      + X.para('Tổng số ' + L.length + ' nhiệm vụ; đã hoàn thành ' + ht + ' nhiệm vụ (' + pct(ht, L.length) + '); trong hạn ' + th + ' nhiệm vụ; đến hạn trong 7 ngày tới ' + dh + ' nhiệm vụ; quá hạn ' + qh + ' nhiệm vụ (' + pct(qh, L.length) + '); ' + kh + ' nhiệm vụ chưa có thời hạn cụ thể. Cần đôn đốc ' + (qh + dh) + ' nhiệm vụ.', {ind: true, sau: 120});
+    const rowsNg = (ng ? [ng] : NG).map((n) => { const R = A.filter((r) => r.nguon === n); return [{t: n, jc: 'left'}, R.length, c(R, 'Đã hoàn thành'), c(R, 'Trong hạn'), c(R, 'Đến hạn trong 7 ngày'), {t: c(R, 'Quá hạn'), fill: c(R, 'Quá hạn') ? 'F4CCCC' : ''}, pct(c(R, 'Đã hoàn thành'), R.length)]; });
+    if (!ng) rowsNg.push([{t: 'Tổng cộng', b: true, jc: 'left'}, {t: L.length, b: true}, {t: ht, b: true}, {t: th, b: true}, {t: dh, b: true}, {t: qh, b: true}, {t: pct(ht, L.length), b: true}]);
+    b += X.table([2600, 1000, 1150, 1050, 1150, 1000, 1100], ['Nguồn giao', 'Tổng số', 'Đã hoàn thành', 'Trong hạn', 'Đến hạn 7 ngày', 'Quá hạn', 'Tỷ lệ hoàn thành'], rowsNg);
+    const W = [450, 3300, 1350, 1500, 1000, 1100, 4150], H = ['TT', 'Nhiệm vụ', 'Văn bản giao', 'Chủ trì, đầu mối', 'Thời hạn', 'Tình trạng', 'Kết quả, tình hình'];
+    const dong = (R) => R.map((r, i) => [i + 1, {t: r.ma + '. ' + r.ten, jc: 'left'}, r.van_ban, {t: [r.chu_tri, r.dau_moi && r.dau_moi !== r.chu_tri ? 'Đầu mối: ' + r.dau_moi : ''].filter(Boolean).join('\n'), jc: 'left'}, r.han || (r.han_ngay ? qxDMY(r.han_ngay) : 'Chưa có'),
+      {t: r.tinh_trang_ct, fill: {crit: 'F4CCCC', warn: 'FFF2CC'}[qxNvgSt(r)]}, {t: ((k) => k.length > 320 ? k.slice(0, 320).replace(/\s+\S*$/, '') + '…' : k)(r.ket_qua || (r.lich_su.length ? r.lich_su[r.lich_su.length - 1].nd : '') || 'Chưa có báo cáo kết quả'), jc: 'left'}]);
+    const QH = L.filter((r) => r.tinh_trang === 'Quá hạn').sort((a, b) => (b.qua_han_ngay || 0) - (a.qua_han_ngay || 0));
+    const DH = L.filter((r) => r.tinh_trang === 'Đến hạn trong 7 ngày').sort((a, b) => String(a.han_ngay).localeCompare(String(b.han_ngay)));
+    b += X.para('II. NHIỆM VỤ QUÁ HẠN (' + QH.length + ' nhiệm vụ)', {b: true, tr: 200, sau: 80}) + (QH.length ? X.table(W, H, dong(QH), {sz: 20}) : X.para('Không có nhiệm vụ quá hạn.', {ind: true}));
+    b += X.para('III. NHIỆM VỤ ĐẾN HẠN TRONG 7 NGÀY TỚI (' + DH.length + ' nhiệm vụ)', {b: true, tr: 200, sau: 80}) + (DH.length ? X.table(W, H, dong(DH), {sz: 20}) : X.para('Không có nhiệm vụ đến hạn trong 7 ngày tới.', {ind: true}));
+    const loc = ['nvg_tt', 'nvg_vb', 'nvg_dv', 'nvg_lv', 'nvg_dm', 'nvg_q', 'nvg_tu', 'nvg_den', 'xa'].some((k) => p[k]);
+    if (loc) { const S = qxNvgShown(); b += X.para('IV. DANH SÁCH NHIỆM VỤ THEO BỘ LỌC ĐANG CHỌN (' + S.length + ' nhiệm vụ)', {b: true, tr: 200, sau: 80}) + X.table(W, H, dong(S), {sz: 20}); }
+    b += X.para('Ghi chú: số liệu theo hệ thống theo dõi nhiệm vụ của Văn phòng Tỉnh ủy; tình trạng quá hạn, đến hạn tính theo ngày xuất báo cáo. Nguồn: Quang Tri Weekly Index (bản thử nghiệm).', {i: true, sz: 22, tr: 160});
+    return X.pack(b, true);
+  };
+  document.querySelectorAll('.qx-nvg-docx').forEach((btn) => btn.addEventListener('click', () => { const ng = dash.params().nvg_ng || ''; qxDx.save(qxDocxNvg(), 'Bao cao tinh hinh thuc hien nhiem vu - ' + (ng || 'tat ca nguon giao') + ' - ' + qxDMY(qxHomNay()).replace(/\//g, '.') + '.docx', btn); }));
   window.qxNvgShown = () => {
     const p = dash.params(); const q = (p.nvg_q || '').toLowerCase(); const dk = p.nvg_dk || '';
     const day = (r) => dk === 'giao' ? qxIsoNgay(r.giao_luc) : dk === 'cn' ? qxIsoNgay(r.cap_nhat) : r.han_ngay;
