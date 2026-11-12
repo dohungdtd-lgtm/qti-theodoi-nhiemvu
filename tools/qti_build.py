@@ -100,7 +100,8 @@ def build(a):
     if a.roster:
         roster = json.load(open(a.roster, encoding='utf-8'))
         if not any(chuan(r['sdt']) == chuan(a.owner) for r in roster): sys.exit('Chủ trang phải có trong danh sách.')
-        m = os.urandom(32); salt = os.urandom(16).hex(); W = None
+        m = os.urandom(32); W = None
+        if a.new_salt: salt = os.urandom(16).hex()   # đổi salt thì đồng bộ trang xã phải cài lại khóa
     chung = {k: v_ for k, v_ in data.items() if k not in RIENG}
     rieng = {k: data.get(k, []) for k in RIENG}
     btvs = sorted({r['btv'] for r in roster if r.get('btv')})
@@ -130,6 +131,6 @@ def check(a):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); sp = p.add_subparsers(dest='cmd', required=True)
-    b = sp.add_parser('build'); [b.add_argument('--' + x, required=x != 'roster') for x in ('page', 'index', 'data', 'owner', 'out', 'roster')]
+    b = sp.add_parser('build'); [b.add_argument('--' + x, required=x != 'roster') for x in ('page', 'index', 'data', 'owner', 'out', 'roster')]; b.add_argument('--new-salt', action='store_true')
     c = sp.add_parser('check'); c.add_argument('--page', required=True); c.add_argument('--phone', required=True)
     a = p.parse_args(); build(a) if a.cmd == 'build' else check(a)
