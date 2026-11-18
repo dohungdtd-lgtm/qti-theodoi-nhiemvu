@@ -55,7 +55,7 @@ def mo_khoa(W, salt, phone):
 def xa_cua(btv_names, index_html):
     i = index_html.index('QX_BTV=[')
     out = {}
-    for m in re.finditer(r"\{ten:'([^']+)',chuc_vu:'[^']*',xa:\[([^\]]*)\]\}", index_html[i:i + 20000]):
+    for m in re.finditer(r"\{(?:vai:'[^']*',)?ten:'([^']+)',chuc_vu:'[^']*',xa:\[([^\]]*)\]\}", index_html[i:i + 60000]):
         out[m.group(1)] = set(re.findall(r"'([^']+)'", m.group(2)))
     miss = [b for b in btv_names if b not in out]
     if miss: sys.exit('Không thấy địa bàn của: ' + ', '.join(miss))
